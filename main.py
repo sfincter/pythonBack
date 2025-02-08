@@ -1,66 +1,43 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)  # Разрешаем кросс-доменные запросы
 
-# Настройка MongoDB
-app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # замените на вашу строку подключения
+# Настройка подключения к MongoDB
+app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongo = PyMongo(app)
 
-@app.route('/', methods=['GET'])
-def get_response():
-    return jsonify({"status": "OK"})
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route('/add', methods=['GET', 'POST'])
-def add_data():
-    if request.method == 'POST':
-        # Обработка данных, если метод POST
-        try:
-            data = request.json  # Получаем данные из запроса
-            mongo.db.myCollection.insert_one(data)
-            return jsonify({"message": "Data added successfully!"}), 201
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-    else:
-        # Обработка GET запроса (если требуется)
-        return jsonify({"message": "Send data using POST method."}), 200
-
-
-
-@app.route('/data', methods=['GET'])
-def get_data():
+@app.route('/button_hit', methods=['POST'])
+def handle_button():
     try:
-        data = mongo.db.myCollection.find()  # Находим все документы в коллекции
-        result = []
-
-        for item in data:
-            # Преобразуем _id в строку для корректного отображения в JSON
-            item['_id'] = str(item['_id'])  
-            result.append(item)
-
-        return jsonify(result), 200
-
-    except Exception as e:
-        # Если возникает ошибка, возвращаем описание ошибки
-        return jsonify({"error": str(e)}), 500
+        # Создаем запись для базы данных
+        event_data = {
+            "event": "user hit button",
+            "timestamp": datetime.now()
+        }
+        
+        # Вставляем данные в коллекцию
+        mongo.db.button_clicks.insert_one(event_data)
+        
+        return jsonify({"message": "Button click saved successfully!"}), 200
     
-
-@app.route('/test', methods=['GET'])
-def test_db():
-    try:
-        # Пробуем получить доступ к коллекции
-        db = mongo.cx['myDatabase']  # Проверка подключения
-        if db is None:
-            return jsonify({"error": "MongoDB connection not established"}), 500
-
-        # Если подключение успешно, возвращаем сообщение
-        return jsonify({"message": "MongoDB connection successful!"}), 200
-
     except Exception as e:
-        return jsonify({"error": f"Connection failed: {str(e)}"}), 500
+        return jsonify({"error": str(e)}), 500
 
+@app.route('/data')
+def show_data():
+    try:
+        clicks = list(mongo.db.button_clicks.find({}, {'_id': 0}))
+        return jsonify(clicks), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
