@@ -13,16 +13,20 @@ mongo = PyMongo(app)
 def get_response():
     return jsonify({"status": "OK"})
 
-@app.route('/add', methods=['POST'])
+@app.route('/add', methods=['GET', 'POST'])
 def add_data():
-    # Код для обработки данных
-    try:
-        data = request.json  # Получаем данные из запроса
-        # Действия для добавления данных в базу данных
-        mongo.db.myCollection.insert_one(data)
-        return jsonify({"message": "Data added successfully!"}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    if request.method == 'POST':
+        # Обработка данных, если метод POST
+        try:
+            data = request.json  # Получаем данные из запроса
+            mongo.db.myCollection.insert_one(data)
+            return jsonify({"message": "Data added successfully!"}), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        # Обработка GET запроса (если требуется)
+        return jsonify({"message": "Send data using POST method."}), 200
+
 
 
 @app.route('/data', methods=['GET'])
