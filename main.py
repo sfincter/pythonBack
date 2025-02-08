@@ -10,7 +10,7 @@ app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0
 mongo = PyMongo(app)
 
 @app.route('/', methods=['GET'])
-def add_data():
+def get_response():
     return jsonify({"status": "OK"})
 
 # Пример роута для добавления данных в MongoDB
