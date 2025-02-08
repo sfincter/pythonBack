@@ -11,7 +11,7 @@
     <script>
         async function sendClick() {
             try {
-                const response = await fetch('https://pythonback-production-fbdb.up.railway.app/button_hit', {
+                const response = await fetch('/button_hit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
