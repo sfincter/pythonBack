@@ -9,6 +9,10 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # замените на вашу строку подключения
 mongo = PyMongo(app)
 
+@app.route('/', methods=['GET'])
+def add_data():
+    return jsonify({"status": "OK"})
+
 # Пример роута для добавления данных в MongoDB
 @app.route('/add', methods=['POST'])
 def add_data():
