@@ -1,31 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Button Click Tracker</title>
-</head>
-<body>
-    <h1>Click the button to track events</h1>
-    <button onclick="sendClick()">Click Me!</button>
-    <p id="message"></p>
+<button onclick="sendClick()">Click Me</button>
+<p id="status"></p>
 
-    <script>
-        async function sendClick() {
-            try {
-                const response = await fetch('/button_hit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const result = await response.json();
-                document.getElementById('message').textContent = result.message;
-                
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('message').textContent = 'Error saving click';
+<script>
+async function sendClick() {
+    const statusElement = document.getElementById('status');
+    try {
+        const response = await fetch('/button_hit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
             }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    </script>
-</body>
-</html>
+        
+        const data = await response.json();
+        statusElement.textContent = data.message;
+        statusElement.style.color = 'green';
+        
+    } catch (error) {
+        statusElement.textContent = `Error: ${error.message}`;
+        statusElement.style.color = 'red';
+        console.error('Error:', error);
+    }
+}
+</script>

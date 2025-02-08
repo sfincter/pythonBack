@@ -4,7 +4,7 @@ from flask_cors import CORS
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # Разрешаем кросс-доменные запросы
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Настройка подключения к MongoDB
 app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -20,7 +20,7 @@ def handle_button():
         # Создаем запись для базы данных
         event_data = {
             "event": "user hit button",
-            "timestamp": datetime.now()
+            "timestamp": datetime.now().isoformat()
         }
         
         # Вставляем данные в коллекцию
