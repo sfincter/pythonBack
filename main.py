@@ -17,19 +17,24 @@ def index():
 @app.route('/button_hit', methods=['POST'])
 def handle_button():
     try:
-        # Создаем запись для базы данных
+        print("Attempting to connect to DB...")  # Логируем начало операции
+        
         event_data = {
             "event": "user hit button",
             "timestamp": datetime.now().isoformat()
         }
         
-        # Вставляем данные в коллекцию
-        mongo.db.button_clicks.insert_one(event_data)
+        # Логируем данные перед вставкой
+        print(f"Inserting data: {event_data}")
         
-        return jsonify({"message": "Button click saved successfully!"}), 200
+        result = mongo.db.button_clicks.insert_one(event_data)
+        print(f"Insert result ID: {result.inserted_id}")  # Логируем ID документа
+        
+        return jsonify({"message": "Click saved!"}), 200
     
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"!!! CRITICAL ERROR: {str(e)}")  # Подробное логирование ошибки
+        return jsonify({"error": "Database operation failed"}), 500
 
 @app.route('/data')
 def show_data():
