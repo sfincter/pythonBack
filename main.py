@@ -41,11 +41,16 @@ def get_data():
 @app.route('/test', methods=['GET'])
 def test_db():
     try:
-        # Пример простого запроса к коллекции для проверки
-        mongo.db.myCollection.count_documents({})
-        return jsonify({"message": "Connection to MongoDB successful!"}), 200
+        # Пробуем получить доступ к коллекции
+        db = mongo.cx['myDatabase']  # Проверка подключения
+        if db is None:
+            return jsonify({"error": "MongoDB connection not established"}), 500
+
+        # Если подключение успешно, возвращаем сообщение
+        return jsonify({"message": "MongoDB connection successful!"}), 200
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Connection failed: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
