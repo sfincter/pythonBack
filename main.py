@@ -1,66 +1,52 @@
-from flask import Flask, render_template, jsonify, request
+import requests
+from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
-from flask_cors import CORS
-from datetime import datetime
 
 app = Flask(__name__)
 
-# Настройка MongoDB
-app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # замените на вашу строку подключения
+# Настройка подключения к MongoDB
+app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/myDatabase?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
-@app.route('/', methods=['GET'])
-def get_response():
-    return jsonify({"status": "OK"})
-
-@app.route('/add', methods=['GET', 'POST'])
+# Маршрут для добавления данных
+@app.route('/add', methods=['POST'])
 def add_data():
-    if request.method == 'POST':
-        # Обработка данных, если метод POST
-        try:
-            data = request.json  # Получаем данные из запроса
-            mongo.db.myCollection.insert_one(data)
-            return jsonify({"message": "Data added successfully!"}), 201
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-    else:
-        # Обработка GET запроса (если требуется)
-        return jsonify({"message": "Send data using POST method."}), 200
-
-
-
-@app.route('/data', methods=['GET'])
-def get_data():
     try:
-        data = mongo.db.myCollection.find()  # Находим все документы в коллекции
-        result = []
+        data = request.json  # Получаем данные из запроса
+        if data is None:  # Проверяем, что данные пришли
+            return jsonify({"error": "No data received"}), 400
 
-        for item in data:
-            # Преобразуем _id в строку для корректного отображения в JSON
-            item['_id'] = str(item['_id'])  
-            result.append(item)
+        # Вставляем данные в коллекцию MongoDB
+        mongo.db.myCollection.insert_one(data)
 
-        return jsonify(result), 200
+        # Отправляем тестовые данные на другой маршрут с использованием requests
+        test_data = {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "age": 30
+        }
 
+        response = requests.post('https://pythonback-production-fbdb.up.railway.app/test', json=test_data)  # Отправляем данные на /test
+
+        if response.status_code == 200:
+            print("Test data successfully sent:", response.json())
+        else:
+            print("Failed to send test data:", response.status_code)
+
+        return jsonify({"message": "Data added successfully!"}), 201
     except Exception as e:
-        # Если возникает ошибка, возвращаем описание ошибки
         return jsonify({"error": str(e)}), 500
-    
 
-@app.route('/test', methods=['GET'])
-def test_db():
+# Дополнительный маршрут для теста
+@app.route('/test', methods=['POST'])
+def test_route():
     try:
-        # Пробуем получить доступ к коллекции
-        db = mongo.cx['myDatabase']  # Проверка подключения
-        if db is None:
-            return jsonify({"error": "MongoDB connection not established"}), 500
-
-        # Если подключение успешно, возвращаем сообщение
-        return jsonify({"message": "MongoDB connection successful!"}), 200
-
+        test_data = request.json  # Получаем тестовые данные
+        if test_data:
+            return jsonify({"message": "Test data received", "data": test_data}), 200
+        return jsonify({"error": "No data received"}), 400
     except Exception as e:
-        return jsonify({"error": f"Connection failed: {str(e)}"}), 500
+        return jsonify({"error": str(e)}), 500
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
