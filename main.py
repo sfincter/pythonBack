@@ -13,12 +13,17 @@ mongo = PyMongo(app)
 def get_response():
     return jsonify({"status": "OK"})
 
-# Пример роута для добавления данных в MongoDB
 @app.route('/add', methods=['POST'])
 def add_data():
-    data = request.json  # Получаем JSON-данные из запроса
-    mongo.db.myCollection.insert_one(data)  # Вставляем данные в коллекцию
-    return jsonify({"message": "Data added successfully!"}), 201
+    # Код для обработки данных
+    try:
+        data = request.json  # Получаем данные из запроса
+        # Действия для добавления данных в базу данных
+        mongo.db.myCollection.insert_one(data)
+        return jsonify({"message": "Data added successfully!"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/data', methods=['GET'])
 def get_data():
