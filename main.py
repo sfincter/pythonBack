@@ -6,7 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Настройка MongoDB
-app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:6A8zrE9ULIInxEHR@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # замените на вашу строку подключения
+app.config["MONGO_URI"] = "mongodb+srv://samyrize77777:<6A8zrE9ULIInxEHR>@cluster0.ahmvu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # замените на вашу строку подключения
 mongo = PyMongo(app)
 
 @app.route('/', methods=['GET'])
