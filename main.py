@@ -15,5 +15,9 @@ def index():
 def get_message():
     return jsonify({'message': 'Привет от Flask!'})
 
+@app.route('/addspecialist', methods=['GET'])
+def add():
+    return render_template('layout.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
