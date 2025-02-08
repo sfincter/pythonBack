@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    <title>Getbetter API</title>
+{% endblock %}
+
+{% block body %}
+   <h1>Getbetter API</h1>
+   <div class="container">
+    <div class="row">
+        <div class="col-12">
+            <input class="mainSearch" type="search" placeholder="Искать по запросам">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-6 col-xl-3">
+            <div class="card">
+                <p class="productTitle">Заголовок</p>
+                <p class="productDate">Дата: {{ current_date }}</p>
+                <p class="productDate">Цена BTC: {{ price }} USDT</p>
+                <button class="mainBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">Отправить запрос</button>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-xl-3">
+            <div class="card">
+                <p class="productTitle">Заголовок</p>
+                <p class="productDate">Дата: {{ current_date }}</p>
+                <p class="productDate">Цена BTC: {{ price }} USDT</p>
+                <button class="mainBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">Отправить запрос</button>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-xl-3">
+            <div class="card">
+                <p class="productTitle">Заголовок</p>
+                <p class="productDate">Дата: {{ current_date }}</p>
+                <p class="productDate">Цена BTC: {{ price }} USDT</p>
+                <button class="mainBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">Отправить запрос</button>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-xl-3">
+            <div class="card">
+                <p class="productTitle">Заголовок</p>
+                <p class="productDate">Дата: {{ current_date }}</p>
+                <p class="productDate">Цена BTC: {{ price }} USDT</p>
+                <button class="mainBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">Отправить запрос</button>
+            </div>
+        </div>
+    </div>
+   </div>
+   <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Отправка запроса</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            {{ current_date }}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            <button type="button" class="btn btn-primary"><a href="http://127.0.0.1:5000/api/message">Отправить</a></button>
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

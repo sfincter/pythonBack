@@ -1,0 +1,70 @@
+body {
+    background-color: #4d71f526;
+    font-family: "Inter", serif;
+    font-optical-sizing: auto;
+}
+h1 {
+    font-size: 36px;
+    font-weight: 400;
+    text-align: center;
+    color: white;
+    padding: 20px;
+    margin-bottom: 50px;
+    background: linear-gradient(100deg, #4627f5, #bcc2ff);
+}
+.card {
+    background-color: white;
+    border: none;
+    padding: 50px;
+    border-radius: 20px;
+    color: black;
+    margin-bottom: 25px;
+}
+.productTitle {
+    font-size: 24px;
+    font-weight: 400;
+}
+.productDate {
+    color: gray;
+}
+button.mainBtn {
+    border: none;
+    padding: 10px;
+    border: 1px solid #725bf3;
+    background-color: transparent;
+    color: #725bf3;
+    border-radius: 10px;
+    font-weight: 500;
+}
+.btn-primary {
+    background: #725bf3;
+}
+.btn-secondary {
+    background-color: #e3e3e3;
+    border: none;
+    color: gray;
+}
+button.mainBtn:hover {
+    border: 1px solid #725bf3;
+    background: #725bf3;
+    color: white;
+    transition: .2s ease-in-out;
+}
+.mainSearch {
+    width: 100%;
+    margin-bottom: 25px;
+    border: none;
+    padding: 17px;
+    border-radius: 20px;
+    border: 4px solid white;
+    transition: .3s ease-in-out;
+}
+input:focus {
+    border: 4px solid #725bf3;
+    outline: none;
+    color: #725bf3;
+}
+
+#exampleModal {
+    border-radius: 20px;
+}
