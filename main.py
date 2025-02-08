@@ -20,15 +20,33 @@ def add_data():
     mongo.db.myCollection.insert_one(data)  # Вставляем данные в коллекцию
     return jsonify({"message": "Data added successfully!"}), 201
 
-# Пример роута для получения данных из MongoDB
 @app.route('/data', methods=['GET'])
 def get_data():
-    data = mongo.db.myCollection.find()  # Находим все документы в коллекции
-    result = []
-    for item in data:
-        item['_id'] = str(item['_id'])  # Преобразуем _id в строку для JSON
-        result.append(item)
-    return jsonify(result), 200
+    try:
+        data = mongo.db.myCollection.find()  # Находим все документы в коллекции
+        result = []
+
+        for item in data:
+            # Преобразуем _id в строку для корректного отображения в JSON
+            item['_id'] = str(item['_id'])  
+            result.append(item)
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        # Если возникает ошибка, возвращаем описание ошибки
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/test', methods=['GET'])
+def test_db():
+    try:
+        # Пример простого запроса к коллекции для проверки
+        mongo.db.myCollection.count_documents({})
+        return jsonify({"message": "Connection to MongoDB successful!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
