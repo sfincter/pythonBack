@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 app = Flask(__name__)
 
@@ -14,8 +15,8 @@ db = SQLAlchemy(app)
 @app.route('/')
 def index():
     try:
-        # Пытаемся выполнить запрос к базе данных
-        result = db.session.execute('SELECT 1')
+        # Выполняем SQL-запрос с использованием text()
+        db.session.execute(text('SELECT 1'))
         return "Database is connected!"
     except Exception as e:
         # Если ошибка, выводим её
