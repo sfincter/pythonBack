@@ -1,23 +1,40 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import os
 import pymysql
 
-
-
+# Инициализация Flask
 app = Flask(__name__)
-app.config.from_object('config.Config')
 
+# Подключение к базе данных через переменную окружения
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')  # Переменная Railway
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Инициализация SQLAlchemy
 db = SQLAlchemy(app)
-pymysql.install_as_MySQLdb()
 
-# Проверка подключения
-@app.route('/')
+# Модель данных
+class Data(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.String(120), nullable=False)
+
+# Главная страница с формой
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    try:
-        db.session.execute('SELECT 1')
-        return "Connected to MySQL on Railway!"
-    except Exception as e:
-        return f"Error: {e}"
+    if request.method == 'POST':
+        data_input = request.form['data']
+        
+        # Добавление данных в базу данных
+        new_data = Data(data=data_input)
+        db.session.add(new_data)
+        db.session.commit()
+
+        # Перенаправление на главную страницу после добавления
+        return redirect(url_for('index'))
+    
+    # Получаем все данные для отображения
+    all_data = Data.query.all()
+    return render_template('index.html', data=all_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

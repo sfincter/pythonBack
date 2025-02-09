@@ -1,29 +1,25 @@
-<button onclick="sendClick()">Click Me</button>
-<p id="status"></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить данные в MySQL</title>
+</head>
+<body>
+    <h1>Добавить данные в базу данных</h1>
+    
+    <!-- Форма для добавления данных -->
+    <form method="POST">
+        <label for="data">Введите данные:</label>
+        <input type="text" name="data" required>
+        <button type="submit">Добавить</button>
+    </form>
 
-<script>
-async function sendClick() {
-    const statusElement = document.getElementById('status');
-    try {
-        const response = await fetch('/button_hit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        statusElement.textContent = data.message;
-        statusElement.style.color = 'green';
-        
-    } catch (error) {
-        statusElement.textContent = `Error: ${error.message}`;
-        statusElement.style.color = 'red';
-        console.error('Error:', error);
-    }
-}
-</script>
+    <h2>Все данные:</h2>
+    <ul>
+        {% for item in data %}
+            <li>{{ item.data }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
