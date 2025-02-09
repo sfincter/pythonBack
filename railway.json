@@ -1,0 +1,18 @@
+{
+    "builds": [
+      {
+        "src": "backend/requirements.txt",
+        "use": "@railway/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/static/(.*)",
+        "dest": "/frontend/build/static/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/backend/app.py"
+      }
+    ]
+  }
