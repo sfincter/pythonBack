@@ -11,21 +11,19 @@
         <div class="row">
             <h1>Данные</h1>
 
-    <!-- Форма добавления данных -->
-    <form action="/" method="post">
-        <input type="text" name="data" placeholder="Введите данные" required>
-        <input type="number" name="salary" placeholder="Введите зарплату" required>
-    
-        <label for="options">Выберите опции:</label>
-        <select name="options" multiple>
-            <option value="Врач">Врач</option>
-            <option value="Психотерапевт">Психотерапевт</option>
-            <option value="Доцент">Доцент</option>
-            <option value="Проффессор">Проффессор</option>
-        </select>
-    
-        <button type="submit">Добавить</button>
-    </form>
+            <form action="/" method="post">
+                <input type="text" name="data" placeholder="Введите данные" required>
+                <input type="number" name="salary" placeholder="Введите зарплату" required>
+            
+                <label for="options">Выберите специализацию:</label><br>
+                <input type="checkbox" name="options" value="Врач"> Врач<br>
+                <input type="checkbox" name="options" value="Психотерапевт"> Психотерапевт<br>
+                <input type="checkbox" name="options" value="Профессор"> Профессор<br>
+                <input type="checkbox" name="options" value="Доцент"> Доцент<br>
+            
+                <button type="submit">Добавить</button>
+            </form>
+            
     
 
     <!-- Таблица с данными -->
