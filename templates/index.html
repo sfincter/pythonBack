@@ -21,7 +21,7 @@
                 <input type="checkbox" name="options" value="Профессор"> Профессор<br>
                 <input type="checkbox" name="options" value="Доцент"> Доцент<br>
             
-                <button type="submit">Добавить</button>
+                <button class="addBtn" type="submit">Добавить</button>
             </form>
             
     
@@ -52,11 +52,19 @@
             </tr>
         </tbody>
         <style>
+            .addBtn {
+                background-color: rgb(78, 43, 235);
+                border: none;
+                color: white;
+                padding: 10px 30px;
+                border-radius: 20px;
+            }
             .deleteBtn {
                 background-color: crimson;
                 border: none;
                 color: white;
-                padding: 20px;
+                padding: 10px 30px;
+                border-radius: 20px;
             }
         </style>
         {% endfor %}
