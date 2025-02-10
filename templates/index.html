@@ -11,6 +11,12 @@
         <div class="row">
             <h1>Управление сотрудниками</h1>
 
+            <form action="{{ url_for('index') }}" method="get">
+                <input type="text" name="search" placeholder="Введите запрос" value="{{ request.args.get('search', '') }}">
+                <button type="submit">Поиск</button>
+            </form>
+            
+
             <form action="/" method="post">
                 <input type="text" name="data" placeholder="Введите данные" required>
                 <input type="number" name="salary" placeholder="Введите зарплату" required>
