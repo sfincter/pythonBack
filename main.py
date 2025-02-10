@@ -25,28 +25,22 @@ with app.app_context():
     db.create_all()
 
 # Главная страница с формой
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
-    try:
-        if request.method == 'POST':
-            data_input = request.form['data']
-            salary_input = request.form.get('salary', 0)
-            
-            # Получаем массив выбранных опций
-            selected_options = request.form.getlist('options')  # ['Option 1', 'Option 2']
-            options_str = " , ".join(selected_options)  # Преобразуем в строку: "Option 1,Option 2"
+    search_query = request.args.get("search", "").strip()  # Получаем поисковый запрос из URL и удаляем лишние пробелы
 
-            new_data = Data(data=data_input, salary=int(salary_input), options=options_str)
-            db.session.add(new_data)
-            db.session.commit()
-            return redirect(url_for('index'))
-        
+    if search_query:
+        # Фильтруем записи, где поле `data` или `salary` содержит поисковый запрос
+        all_data = Data.query.filter(
+            (Data.data.ilike(f"%{search_query}%")) | 
+            (Data.salary.ilike(f"%{search_query}%"))
+        ).all()
+    else:
+        # Если поиска нет, получаем все записи
         all_data = Data.query.all()
-        return render_template('index.html', data=all_data)
-    
-    except Exception as e:
-        logging.exception("Ошибка при обработке запроса")
-        return f"Ошибка сервера: {str(e)}", 500
+
+    return render_template("index.html", data=all_data, search_query=search_query)
+
 
 
     
