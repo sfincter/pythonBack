@@ -45,19 +45,25 @@ def index():
             except ValueError:
                 return "Ошибка: зарплата должна быть числом", 400
 
-    # Поиск записей
+    # Фильтрация поиска
     if search_query:
         try:
-            salary_value = int(search_query)
+            salary_value = int(search_query)  # Проверяем, является ли запрос числом
             all_data = Data.query.filter(
-                (Data.data.ilike(f"%{search_query}%")) | (Data.salary == salary_value)
+                (Data.data.ilike(f"%{search_query}%")) | 
+                (Data.salary == salary_value) |
+                (Data.options.ilike(f"%{search_query}%"))  # Добавлен поиск по options
             ).all()
         except ValueError:
-            all_data = Data.query.filter(Data.data.ilike(f"%{search_query}%")).all()
+            all_data = Data.query.filter(
+                (Data.data.ilike(f"%{search_query}%")) | 
+                (Data.options.ilike(f"%{search_query}%"))  # Поиск по options как тексту
+            ).all()
     else:
         all_data = Data.query.all()
 
     return render_template("index.html", data=all_data, search_query=search_query)
+
 
 
     
