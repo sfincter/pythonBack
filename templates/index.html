@@ -1,18 +1,37 @@
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Data</th>
-        <th>Actions</th>
-    </tr>
-    {% for item in data %}
-    <tr>
-        <td>{{ item.id }}</td>
-        <td>{{ item.data }}</td>
-        <td>
-            <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post">
-                <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask + MySQL</title>
+</head>
+<body>
+    <h1>Данные</h1>
+
+    <!-- Форма добавления данных -->
+    <form action="/" method="post">
+        <input type="text" name="data" required>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <!-- Таблица с данными -->
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Actions</th>
+        </tr>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.data }}</td>
+            <td>
+                <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post">
+                    <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
