@@ -13,24 +13,36 @@
 
     <!-- Форма добавления данных -->
     <form action="/" method="post">
-        <input type="text" name="data" required placeholder="Введите имя">
-        <input type="number" name="salary" required placeholder="Введите зарплату">
+        <input type="text" name="data" placeholder="Введите данные" required>
+        <input type="number" name="salary" placeholder="Введите зарплату" required>
+    
+        <label for="options">Выберите опции:</label>
+        <select name="options" multiple>
+            <option value="Option 1">Опция 1</option>
+            <option value="Option 2">Опция 2</option>
+            <option value="Option 3">Опция 3</option>
+            <option value="Option 4">Опция 4</option>
+        </select>
+    
         <button type="submit">Добавить</button>
     </form>
+    
 
     <!-- Таблица с данными -->
     <table border="1">
         <tr>
             <th>ID</th>
-            <th>ФИО</th>
-            <th>Зарплата</th>
-            <th>Действия</th>
+            <th>Data</th>
+            <th>Salary</th>
+            <th>Options</th>
+            <th>Actions</th>
         </tr>
         {% for item in data %}
         <tr>
             <td>{{ item.id }}</td>
             <td>{{ item.data }}</td>
             <td>{{ item.salary }}</td>
+            <td>{{ item.options }}</td>  <!-- Здесь будут сохраненные значения -->
             <td>
                 <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post">
                     <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
@@ -39,6 +51,7 @@
         </tr>
         {% endfor %}
     </table>
+    
         </div>
     </div>
 </body>

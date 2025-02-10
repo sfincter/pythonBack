@@ -18,6 +18,7 @@ class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
+    options = db.Column(db.Text, nullable=True)
 
 # Создаем таблицы (если их нет)
 with app.app_context():
@@ -29,9 +30,13 @@ def index():
     try:
         if request.method == 'POST':
             data_input = request.form['data']
-            salary_input = request.form.get('salary', 0)  # Если не передали, будет 0
+            salary_input = request.form.get('salary', 0)
+            
+            # Получаем массив выбранных опций
+            selected_options = request.form.getlist('options')  # ['Option 1', 'Option 2']
+            options_str = ",".join(selected_options)  # Преобразуем в строку: "Option 1,Option 2"
 
-            new_data = Data(data=data_input, salary=int(salary_input))
+            new_data = Data(data=data_input, salary=int(salary_input), options=options_str)
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for('index'))
@@ -42,6 +47,7 @@ def index():
     except Exception as e:
         logging.exception("Ошибка при обработке запроса")
         return f"Ошибка сервера: {str(e)}", 500
+
 
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
