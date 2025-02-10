@@ -9,23 +9,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <h1>Добавление/удаление сотрудников</h1>
-
-            <form action="{{ url_for('edit_data', data_id=data_item.id) }}" method="post">
-                <label for="data">Data:</label>
-                <input type="text" name="data" value="{{ data_item.data }}" required><br>
-            
-                <label for="salary">Salary:</label>
-                <input type="number" name="salary" value="{{ data_item.salary }}" required><br>
-            
-                <label for="options">Выберите опции:</label><br>
-                <input type="checkbox" name="options" value="Option 1" {% if 'Option 1' in data_item.options %}checked{% endif %}> Опция 1<br>
-                <input type="checkbox" name="options" value="Option 2" {% if 'Option 2' in data_item.options %}checked{% endif %}> Опция 2<br>
-                <input type="checkbox" name="options" value="Option 3" {% if 'Option 3' in data_item.options %}checked{% endif %}> Опция 3<br>
-                <input type="checkbox" name="options" value="Option 4" {% if 'Option 4' in data_item.options %}checked{% endif %}> Опция 4<br>
-            
-                <button type="submit">Сохранить изменения</button>
-            </form>
+            <h1>Добавление/удаление сотрудников</h1
             
             
             
