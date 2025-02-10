@@ -75,7 +75,7 @@ def edit_data(data_id):
         # Обновляем данные из формы
         data_item.data = request.form['data']
         data_item.salary = request.form['salary']
-        data_item.options = ",".join(request.form.getlist('options'))  # Обновляем выбранные опции
+        data_item.options = " , ".join(request.form.getlist('options'))  # Обновляем выбранные опции
 
         # Сохраняем изменения в базе данных
         db.session.commit()
