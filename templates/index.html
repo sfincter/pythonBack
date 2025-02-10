@@ -21,7 +21,7 @@
                 <input type="checkbox" name="options" value="Профессор"> Профессор<br>
                 <input type="checkbox" name="options" value="Доцент"> Доцент<br>
             
-                <button class="addBtn" type="submit">Добавить</button>
+                <button class="btn btn-success" type="submit">Добавить</button>
             </form>
             
     
@@ -45,7 +45,7 @@
                 <!-- Кнопка редактирования -->
                 <a href="{{ url_for('edit_data', data_id=item.id) }}">Редактировать</a>
                 <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
+                    <button class="btn btn-danger" type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
                 </form>
             </td>
         </tr>
