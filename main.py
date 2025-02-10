@@ -27,27 +27,28 @@ with app.app_context():
 # Главная страница с формой
 @app.route("/", methods=["GET", "POST"])
 def index():
-    search_query = request.args.get("search", "").strip()  # Получаем поисковый запрос из GET-параметра
+    search_query = request.args.get("search", "").strip()
 
     if request.method == "POST":
-        # Обработка добавления новой записи
         data_input = request.form.get("data")
         salary_input = request.form.get("salary")
+        options_input = request.form.getlist("options")  # Получаем список чекбоксов
 
         if data_input and salary_input:
             try:
-                salary_value = int(salary_input)  # Преобразуем зарплату в число
-                new_data = Data(data=data_input, salary=salary_value)
+                salary_value = int(salary_input)
+                options_value = ", ".join(options_input) if options_input else ""  # Преобразуем список в строку
+                new_data = Data(data=data_input, salary=salary_value, options=options_value)
                 db.session.add(new_data)
                 db.session.commit()
-                return redirect(url_for("index"))  # Обновляем страницу после добавления
+                return redirect(url_for("index"))
             except ValueError:
                 return "Ошибка: зарплата должна быть числом", 400
 
     # Поиск записей
     if search_query:
         try:
-            salary_value = int(search_query)  # Проверяем, не число ли это
+            salary_value = int(search_query)
             all_data = Data.query.filter(
                 (Data.data.ilike(f"%{search_query}%")) | (Data.salary == salary_value)
             ).all()
@@ -57,8 +58,6 @@ def index():
         all_data = Data.query.all()
 
     return render_template("index.html", data=all_data, search_query=search_query)
-
-
 
 
     
