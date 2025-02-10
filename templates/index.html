@@ -16,12 +16,10 @@
                 <input type="number" name="salary" placeholder="Введите зарплату" required>
             
                 <label for="options">Выберите специализацию:</label><br>
-                <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>
-                <input type="checkbox" name="options" value="Психотерапевт" {% if 'Психотерапевт' in data_item.options %}checked{% endif %}> Психотерапевт<br>
-                <input type="checkbox" name="options" value="Доктор медицинских наук" {% if 'Доктор медицинских наук' in data_item.options %}checked{% endif %}> Доктор медицинских наук<br>
-                <input type="checkbox" name="options" value="Кандидат медицинских наук" {% if 'Кандидат медицинских наук' in data_item.options %}checked{% endif %}> Кандидат медицинских наук<br>
-                <input type="checkbox" name="options" value="Врач-психотерапевт" {% if 'Врач-психотерапевт' in data_item.options %}checked{% endif %}> Врач-психотерапевт<br>
-                <input type="checkbox" name="options" value="Клинический психолог" {% if 'Клинический психолог' in data_item.options %}checked{% endif %}> Клинический психолог<br>
+                <input type="checkbox" name="options" value="Врач"> Врач<br>
+                <input type="checkbox" name="options" value="Психотерапевт"> Психотерапевт<br>
+                <input type="checkbox" name="options" value="Профессор"> Профессор<br>
+                <input type="checkbox" name="options" value="Доцент"> Доцент<br>
             
                 <button class="btn btn-success" type="submit">Добавить</button>
             </form>
