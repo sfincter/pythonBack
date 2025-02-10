@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
-    salary = db.Column(db.String(20), nullable=False)
+    salary = db.Column(db.Integer(20), nullable=False)
 
 # Создаем таблицы (если их нет)
 with app.app_context():
