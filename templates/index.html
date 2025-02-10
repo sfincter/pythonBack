@@ -9,9 +9,20 @@
 <body>
     <div class="container">
         <div class="row">
-            <h1>Добавление/удаление сотрудников</h1
+            <h1>Добавление/удаление сотрудников</h1>
+
+            <form action="/" method="post">
+                <input type="text" name="data" placeholder="Введите данные" required>
+                <input type="number" name="salary" placeholder="Введите зарплату" required>
             
+                <label for="options">Выберите специализацию:</label><br>
+                <input type="checkbox" name="options" value="Врач"> Врач<br>
+                <input type="checkbox" name="options" value="Психотерапевт"> Психотерапевт<br>
+                <input type="checkbox" name="options" value="Профессор"> Профессор<br>
+                <input type="checkbox" name="options" value="Доцент"> Доцент<br>
             
+                <button class="addBtn" type="submit">Добавить</button>
+            </form>
             
     
 
