@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -18,20 +21,20 @@ class Data(db.Model):
 # Главная страница с формой
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        data_input = request.form['data']
-
-        # Добавление данных в базу данных
-        new_data = Data(data=data_input)
-        db.session.add(new_data)
-        db.session.commit()
-
-        # Перенаправление на главную страницу после добавления
-        return redirect(url_for('index'))
+    try:
+        if request.method == 'POST':
+            data_input = request.form['data']
+            new_data = Data(data=data_input)
+            db.session.add(new_data)
+            db.session.commit()
+            return redirect(url_for('index'))
+        
+        all_data = Data.query.all()
+        return render_template('index.html', data=all_data)
     
-    # Получаем все данные из базы для отображения
-    all_data = Data.query.all()
-    return render_template('index.html', data=all_data)
+    except Exception as e:
+        logging.exception("Ошибка при обработке запроса")
+        return f"Ошибка сервера: {str(e)}", 500
 
 if __name__ == '__main__':
     app.run(debug=True)
