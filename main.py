@@ -33,7 +33,8 @@ def index():
         # Фильтруем записи, где поле `data` или `salary` содержит поисковый запрос
         all_data = Data.query.filter(
             (Data.data.ilike(f"%{search_query}%")) | 
-            (Data.salary.ilike(f"%{search_query}%"))
+            (Data.salary.ilike(f"%{search_query}%")) |
+            (Data.options.ilike(f"%{search_query}%"))
         ).all()
     else:
         # Если поиска нет, получаем все записи
