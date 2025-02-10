@@ -62,6 +62,24 @@ def delete_data(data_id):
     
     return redirect(url_for("index"))
 
+@app.route("/edit/<int:data_id>", methods=["GET", "POST"])
+def edit_data(data_id):
+    # Получаем данные записи по ID
+    data_item = Data.query.get_or_404(data_id)
+
+    if request.method == "POST":
+        # Обновляем данные
+        data_item.data = request.form['data']
+        data_item.salary = request.form['salary']
+        data_item.options = ",".join(request.form.getlist('options'))  # Обновляем выбранные опции
+
+        # Сохраняем изменения в базе данных
+        db.session.commit()
+        return redirect(url_for("index"))  # Перенаправляем на главную страницу
+
+    # Если GET-запрос, то заполняем форму данными для редактирования
+    return render_template("edit.html", data_item=data_item)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
