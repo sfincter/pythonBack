@@ -27,26 +27,31 @@
     
 
     <!-- Таблица с данными -->
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Data</th>
-            <th>Salary</th>
-            <th>Options</th>
-            <th>Actions</th>
-        </tr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Data</th>
+                <th scope="col">Salary</th>
+                <th scope="col">Options</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
         {% for item in data %}
-        <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.data }}</td>
-            <td>{{ item.salary }}</td>
-            <td>{{ item.options }}</td>  <!-- Здесь будут сохраненные значения -->
-            <td>
-                <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post">
-                    <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
-                </form>
-            </td>
-        </tr>
+        <tbody>
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.data }}</td>
+                <td>{{ item.salary }}</td>
+                <td>{{ item.options }}</td>  <!-- Здесь будут сохраненные значения -->
+                <td>
+                    <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post">
+                        <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+        
         {% endfor %}
     </table>
     
