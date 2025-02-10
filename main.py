@@ -27,20 +27,37 @@ with app.app_context():
 # Главная страница с формой
 @app.route("/", methods=["GET", "POST"])
 def index():
-    search_query = request.args.get("search", "").strip()  # Получаем поисковый запрос из URL и удаляем лишние пробелы
+    search_query = request.args.get("search", "").strip()  # Получаем поисковый запрос из GET-параметра
 
+    if request.method == "POST":
+        # Обработка добавления новой записи
+        data_input = request.form.get("data")
+        salary_input = request.form.get("salary")
+
+        if data_input and salary_input:
+            try:
+                salary_value = int(salary_input)  # Преобразуем зарплату в число
+                new_data = Data(data=data_input, salary=salary_value)
+                db.session.add(new_data)
+                db.session.commit()
+                return redirect(url_for("index"))  # Обновляем страницу после добавления
+            except ValueError:
+                return "Ошибка: зарплата должна быть числом", 400
+
+    # Поиск записей
     if search_query:
-        # Фильтруем записи, где поле `data` или `salary` содержит поисковый запрос
-        all_data = Data.query.filter(
-            (Data.data.ilike(f"%{search_query}%")) | 
-            (Data.salary.ilike(f"%{search_query}%")) |
-            (Data.options.ilike(f"%{search_query}%"))
-        ).all()
+        try:
+            salary_value = int(search_query)  # Проверяем, не число ли это
+            all_data = Data.query.filter(
+                (Data.data.ilike(f"%{search_query}%")) | (Data.salary == salary_value)
+            ).all()
+        except ValueError:
+            all_data = Data.query.filter(Data.data.ilike(f"%{search_query}%")).all()
     else:
-        # Если поиска нет, получаем все записи
         all_data = Data.query.all()
 
     return render_template("index.html", data=all_data, search_query=search_query)
+
 
 
 
