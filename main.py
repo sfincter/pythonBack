@@ -34,7 +34,7 @@ def index():
             
             # Получаем массив выбранных опций
             selected_options = request.form.getlist('options')  # ['Option 1', 'Option 2']
-            options_str = ", ".join(selected_options)  # Преобразуем в строку: "Option 1,Option 2"
+            options_str = " , ".join(selected_options)  # Преобразуем в строку: "Option 1,Option 2"
 
             new_data = Data(data=data_input, salary=int(salary_input), options=options_str)
             db.session.add(new_data)
