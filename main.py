@@ -29,7 +29,9 @@ def index():
     try:
         if request.method == 'POST':
             data_input = request.form['data']
-            new_data = Data(data=data_input)
+            salary_input = request.form.get('salary', 0)  # Если не передали, будет 0
+
+            new_data = Data(data=data_input, salary=int(salary_input))
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for('index'))
@@ -40,6 +42,7 @@ def index():
     except Exception as e:
         logging.exception("Ошибка при обработке запроса")
         return f"Ошибка сервера: {str(e)}", 500
+
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
 def delete_data(data_id):
