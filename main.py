@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 # Форматируем DATABASE_URL для SQLAlchemy (заменяем mysql:// на mysql+pymysql://)
-DATABASE_URL = os.getenv("DATABASE_URL", "").replace("mysql://", "mysql+pymysql://")
+DATABASE_URL = os.getenv("DATABASE_URL", "").replace("mysql://root:DmRAFbxJAuoroDekTYiWQBiTMndpFcXr@junction.proxy.rlwy.net:32757/railway")
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
