@@ -1,23 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить данные</title>
-</head>
-<body>
-    <h1>Добавить данные в базу данных</h1>
-
-    <!-- Форма для добавления данных -->
-    <form method="POST">
-        <label for="data">Введите данные:</label>
-        <input type="text" name="data" required>
-        <button type="submit">Добавить</button>
-    </form>
-
-    <h2>Все данные в базе:</h2>
-    <ul>
-        {{ all_data }}
-    </ul>
-</body>
-</html>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Data</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in data %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.data }}</td>
+        <td>
+            <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post">
+                <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

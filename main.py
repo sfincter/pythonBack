@@ -39,6 +39,19 @@ def index():
     except Exception as e:
         logging.exception("Ошибка при обработке запроса")
         return f"Ошибка сервера: {str(e)}", 500
+    
+@app.route("/delete/<int:data_id>", methods=["POST"])
+def delete_data(data_id):
+    try:
+        data_to_delete = Data.query.get(data_id)
+        if data_to_delete:
+            db.session.delete(data_to_delete)
+            db.session.commit()
+    except Exception as e:
+        print(f"Ошибка при удалении: {e}")
+    
+    return redirect(url_for("index"))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
