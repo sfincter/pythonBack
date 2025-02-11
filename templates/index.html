@@ -49,7 +49,8 @@
     <ul>
         {% for data_item in data %}
             <li>
-                <strong>{{ data_item.data }}</strong> - {{ data_item.salary }} ₽
+                <strong>{{ data_item.data }}<br>
+                </strong> Зарплата - {{ data_item.salary }} ₽
                 <br>
                 Тип консультации: {{ data_item.service_type }}<br>
                 Длительность: {{ data_item.service_duration }} мин<br>
