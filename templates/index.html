@@ -22,7 +22,7 @@
 
         <div id="salary_field" style="display: none;">
             <label for="salary">Оклад:</label>
-            <input type="number" name="salary" id="salary">
+            <input type="number" name="salary" id="salary" min="0">
         </div>
 
         <label for="service_type">Тип консультации:</label>
@@ -111,11 +111,15 @@
     <script>
         document.getElementById("salary_checkbox").addEventListener("change", function () {
             var salaryField = document.getElementById("salary_field");
+            var salaryInput = document.getElementById("salary");
+    
             if (this.checked) {
                 salaryField.style.display = "block";
+                salaryInput.required = true;  // Делаем поле обязательным
             } else {
                 salaryField.style.display = "none";
-                document.getElementById("salary").value = "";  // Очищаем поле при скрытии
+                salaryInput.value = "";  // Очищаем поле
+                salaryInput.required = false;  // Убираем обязательность
             }
         });
     </script>
