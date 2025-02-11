@@ -55,7 +55,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-# Главная страница с формой и сортировкой
 @app.route("/", methods=["GET", "POST"])
 def index():
     try:
@@ -65,7 +64,7 @@ def index():
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
-            options = request.form.getlist("options")  # Чек-боксы
+            options = request.form.getlist("options")  # Чек-боксы специализаций
 
             # Проверка на заполненные поля
             if not data_input or not salary_input or not service_duration or not service_price:
@@ -100,7 +99,10 @@ def index():
                 data=data_input,
                 salary=salary_value,
                 services=services_json,
-                options=options_json
+                options=options_json,
+                service_type=service_type,
+                service_duration=duration_value,
+                service_price=price_value
             )
 
             db.session.add(new_data)
@@ -130,6 +132,7 @@ def index():
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
+
 
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
