@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 import logging
+import json
+
 
 app = Flask(__name__)
 
@@ -52,7 +54,7 @@ def index():
             except ValueError:
                 return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
 
-            # Проверяем, есть ли колонка services
+            # Загружаем старые услуги (если есть)
             existing_services = []
             if request.form.get("existing_services"):
                 existing_services = json.loads(request.form.get("existing_services"))
@@ -64,11 +66,13 @@ def index():
             }
             existing_services.append(new_service)
 
-            # Создание новой записи
+            # Преобразуем список в строку JSON
+            services_json = json.dumps(existing_services)
+
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
-                services=existing_services
+                services=services_json  # Сохраняем как строку
             )
 
             db.session.add(new_data)
@@ -81,8 +85,6 @@ def index():
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
-
-
 
 
     
