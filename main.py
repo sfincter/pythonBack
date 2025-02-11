@@ -40,7 +40,6 @@ def index():
         if request.method == "POST":
             data_input = request.form.get("data")
             salary_input = request.form.get("salary")
-            data_item = " , ".join(request.form.getlist('options'))  # Обновляем выбранные опции
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
@@ -94,7 +93,7 @@ def index():
                 except json.JSONDecodeError:
                     item.services = []  # Если парсинг не удался, делаем пустым списком
 
-        return render_template("index.html", data=all_data, data_item=data_item)
+        return render_template("index.html", data=all_data)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
