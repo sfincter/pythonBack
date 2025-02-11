@@ -51,7 +51,7 @@ def index():
 
             # Проверяем, пустое ли поле зарплаты (если чекбокс не нажат, поле не передается)
             if not salary_input or salary_input.strip() == "":
-                salary_value = 0  # Или 0, если оклад не обязателен
+                salary_value = None  # Или 0, если оклад не обязателен
             else:
                 try:
                     salary_value = int(salary_input)
