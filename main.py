@@ -21,7 +21,7 @@ class Data(db.Model):
     data = db.Column(db.String(120), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
     options = db.Column(db.String(255), nullable=True, default="")
-    services = db.Column(JSON, nullable=True, default=[])  # Храним список услуг
+    services = db.Column(db.Text, nullable=True, default="")  # JSON-строка
 
 
 # Создаем таблицы (если их нет)
