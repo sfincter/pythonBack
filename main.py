@@ -41,49 +41,25 @@ logging.basicConfig(level=logging.DEBUG)
 def index():
     try:
         if request.method == "POST":
+            # Получаем данные из формы и добавляем их в базу
             data_input = request.form.get("data")
             salary_input = request.form.get("salary")
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
+            options_input = request.form.getlist("options")
 
-            # Получаем все выбранные чекбоксы
-            selected_options = request.form.getlist("options")  # список значений чекбоксов
-            options_json = json.dumps(selected_options)  # Преобразуем в JSON-строку
+            salary_value = int(salary_input)
+            duration_value = int(service_duration)
+            price_value = int(service_price)
 
-            # Проверка на заполненные поля
-            if not data_input or not salary_input:
-                return "Ошибка: Заполните все поля", 400
-
-            try:
-                salary_value = int(salary_input)
-                duration_value = int(service_duration)
-                price_value = int(service_price)
-            except ValueError:
-                return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
-
-            # Загружаем существующие услуги (если есть)
-            existing_services = []
-            if request.form.get("existing_services"):
-                existing_services = json.loads(request.form.get("existing_services"))
-
-            # Добавляем новую услугу
-            new_service = {
-                "type": service_type,
-                "duration": duration_value,
-                "price": price_value
-            }
-            existing_services.append(new_service)
-
-            # Преобразуем список в JSON-строку
-            services_json = json.dumps(existing_services)
-
-            # Создание новой записи
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
-                services=services_json,
-                options=options_json  # Сохраняем выбранные чекбоксы
+                service_type=service_type,
+                service_duration=duration_value,
+                service_price=price_value,
+                options=json.dumps(options_input)
             )
 
             db.session.add(new_data)
@@ -93,25 +69,16 @@ def index():
         # Получаем все данные из БД
         all_data = Data.query.all()
 
-        # Преобразуем JSON-строки обратно в списки словарей
+        # Преобразуем JSON-строки обратно в списки для отображения
         for item in all_data:
-            if isinstance(item.services, str):
-                try:
-                    item.services = json.loads(item.services)
-                except json.JSONDecodeError:
-                    item.services = []  # Если парсинг не удался, делаем пустым списком
+            item.options = json.loads(item.options)
 
-            if isinstance(item.options, str):
-                try:
-                    item.options = json.loads(item.options)  # Преобразуем JSON в список
-                except json.JSONDecodeError:
-                    item.options = []  # Если ошибка, делаем пустым списком
-
-        return render_template("index.html", data=all_data)  # Передаем all_data в шаблон
+        return render_template("index.html", data=all_data)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
@@ -134,7 +101,7 @@ def delete_data(data_id):
 def edit_data(data_id):
     try:
         data_item = Data.query.get_or_404(data_id)
-        
+
         if request.method == "POST":
             # Получаем данные из формы
             data_input = request.form["data"]
@@ -144,13 +111,13 @@ def edit_data(data_id):
             service_price = request.form.get("service_price")
             options_input = request.form.getlist("options")  # Получаем список выбранных чекбоксов
 
-            # Обновляем запись
+            # Обновляем запись в базе данных
             data_item.data = data_input
             data_item.salary = int(salary_input)
             data_item.service_type = service_type
             data_item.service_duration = int(service_duration)
             data_item.service_price = int(service_price)
-            
+
             # Сохраняем выбранные специализации в формате JSON
             data_item.options = json.dumps(options_input)
 
@@ -158,7 +125,7 @@ def edit_data(data_id):
             db.session.commit()
 
             return redirect(url_for("index"))  # После успешного обновления, перенаправляем на главную страницу
-        
+
         # Если метод GET, то показываем текущие данные
         return render_template("edit.html", data_item=data_item)
 
