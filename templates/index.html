@@ -18,28 +18,32 @@
             
 
             <form method="POST">
-
+                
+                {% for data_item in data %}
                 <label for="options">Выберите специализацию:</label><br>
-
-                {% set selected_options = item.options if item.options else [] %}
-
+            
+                {% set selected_options = data_item.options if data_item.options else [] %}
+            
                 <input type="checkbox" name="options" value="Врач" 
                     {% if "Врач" in selected_options %}checked{% endif %}> Врач<br>
-
+            
                 <input type="checkbox" name="options" value="Психотерапевт" 
                     {% if "Психотерапевт" in selected_options %}checked{% endif %}> Психотерапевт<br>
-
+            
                 <input type="checkbox" name="options" value="Доктор медицинских наук" 
                     {% if "Доктор медицинских наук" in selected_options %}checked{% endif %}> Доктор медицинских наук<br>
-
+            
                 <input type="checkbox" name="options" value="Кандидат медицинских наук" 
                     {% if "Кандидат медицинских наук" in selected_options %}checked{% endif %}> Кандидат медицинских наук<br>
-
+            
                 <input type="checkbox" name="options" value="Врач-психотерапевт" 
                     {% if "Врач-психотерапевт" in selected_options %}checked{% endif %}> Врач-психотерапевт<br>
-
+            
                 <input type="checkbox" name="options" value="Клинический психолог" 
                     {% if "Клинический психолог" in selected_options %}checked{% endif %}> Клинический психолог<br>
+            
+            {% endfor %}
+            
 
 
                 <label>Имя:</label>

@@ -104,11 +104,12 @@ def index():
                 except json.JSONDecodeError:
                     item.options = []  # Если ошибка, делаем пустым списком
 
-        return render_template("index.html", data=all_data)
+        return render_template("index.html", data=all_data)  # Передаем all_data в шаблон
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
     
