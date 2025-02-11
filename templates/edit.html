@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,13 +11,13 @@
         <div class="row">
             <form action="{{ url_for('edit_data', data_id=data_item.id) }}" method="post">
                 <label for="data">Наименование:</label>
-                <input type="text" name="data" value="{{ data_item.data }}" required><br>
-            
+                <input type="text" name="data" value="{{ data_item.data }}" required><br><br>
+
                 <label for="salary">Зарплата:</label>
-                <input type="number" name="salary" value="{{ data_item.salary }}" required><br>
+                <input type="number" name="salary" value="{{ data_item.salary }}" required><br><br>
 
                 <label for="service_type">Тип консультации:</label>
-                <select name="service_type">
+                <select name="service_type" required>
                     <option value="Индивидуальная" {% if data_item.service_type == 'Индивидуальная' %}selected{% endif %}>Индивидуальная</option>
                     <option value="Групповая" {% if data_item.service_type == 'Групповая' %}selected{% endif %}>Групповая</option>
                 </select><br><br>
@@ -27,7 +27,7 @@
 
                 <label for="service_price">Стоимость консультации:</label>
                 <input type="number" name="service_price" value="{{ data_item.service_price }}" required><br><br>
-            
+
                 <label for="options">Выберите специализацию:</label><br>
                 <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>
                 <input type="checkbox" name="options" value="Психотерапевт" {% if 'Психотерапевт' in data_item.options %}checked{% endif %}> Психотерапевт<br>
@@ -35,7 +35,7 @@
                 <input type="checkbox" name="options" value="Кандидат медицинских наук" {% if 'Кандидат медицинских наук' in data_item.options %}checked{% endif %}> Кандидат медицинских наук<br>
                 <input type="checkbox" name="options" value="Врач-психотерапевт" {% if 'Врач-психотерапевт' in data_item.options %}checked{% endif %}> Врач-психотерапевт<br>
                 <input type="checkbox" name="options" value="Клинический психолог" {% if 'Клинический психолог' in data_item.options %}checked{% endif %}> Клинический психолог<br><br>
-            
+
                 <button class="btn btn-primary" type="submit">Сохранить изменения</button>
             </form>
         </div>
