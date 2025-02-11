@@ -20,9 +20,14 @@
             <form action="{{ url_for('index') }}" method="post">
                 <input type="text" name="data" placeholder="Имя пользователя" required>
                 <input type="number" name="salary" placeholder="Зарплата" required>
-            
-                <label><input type="checkbox" name="options" value="Option 1"> Option 1</label>
-                <label><input type="checkbox" name="options" value="Option 2"> Option 2</label>
+                
+                <label for="options">Выберите специализацию:</label><br>
+                <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>
+                <input type="checkbox" name="options" value="Психотерапевт" {% if 'Психотерапевт' in data_item.options %}checked{% endif %}> Психотерапевт<br>
+                <input type="checkbox" name="options" value="Доктор медицинских наук" {% if 'Доктор медицинских наук' in data_item.options %}checked{% endif %}> Доктор медицинских наук<br>
+                <input type="checkbox" name="options" value="Кандидат медицинских наук" {% if 'Кандидат медицинских наук' in data_item.options %}checked{% endif %}> Кандидат медицинских наук<br>
+                <input type="checkbox" name="options" value="Врач-психотерапевт" {% if 'Врач-психотерапевт' in data_item.options %}checked{% endif %}> Врач-психотерапевт<br>
+                <input type="checkbox" name="options" value="Клинический психолог" {% if 'Клинический психолог' in data_item.options %}checked{% endif %}> Клинический психолог<br>
             
                 <br><br>
                 <label>Тип консультации:</label>
