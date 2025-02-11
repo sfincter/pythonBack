@@ -139,13 +139,6 @@ def edit_data(data_id):
         return f"Ошибка сервера: {str(e)}", 500
 
 
-
-
-
-
-
-
-
 if __name__ == '__main__':
     app.run(debug=True)
     app.config["PROPAGATE_EXCEPTIONS"] = True
