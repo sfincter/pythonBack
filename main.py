@@ -22,6 +22,9 @@ class Data(db.Model):
     salary = db.Column(db.Integer, nullable=False)
     options = db.Column(JSON)
     services = db.Column(db.Text, nullable=True, default="")  # JSON-строка
+    service_type = db.Column(db.String(120))  # Тип консультации
+    service_duration = db.Column(db.Integer)  # Длительность консультации
+    service_price = db.Column(db.Integer)  # Стоимость консультации
 
 
 # Создаем таблицы (если их нет)
@@ -136,11 +139,17 @@ def edit_data(data_id):
             # Получаем значения из формы
             data_input = request.form["data"]
             salary_input = request.form["salary"]
+            service_type = request.form.get("service_type")
+            service_duration = request.form.get("service_duration")
+            service_price = request.form.get("service_price")
             options_input = request.form.getlist("options")  # Получаем все выбранные чекбоксы
 
             # Обновляем данные
             data_item.data = data_input
             data_item.salary = int(salary_input)
+            data_item.service_type = service_type
+            data_item.service_duration = int(service_duration)
+            data_item.service_price = int(service_price)
             
             # Преобразуем список специализаций в строку JSON перед сохранением
             data_item.options = json.dumps(options_input)
@@ -154,6 +163,7 @@ def edit_data(data_id):
     except Exception as e:
         logging.exception("Ошибка при редактировании данных")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
