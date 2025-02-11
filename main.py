@@ -19,7 +19,7 @@ from sqlalchemy.dialects.mysql import JSON  # Для хранения масси
 class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
-    salary = db.Column(db.Integer, nullable=True, default=10)
+    salary = db.Column(db.Integer, nullable=True, default=0)
     options = db.Column(JSON)
     services = db.Column(db.Text, nullable=True, default="")  # JSON-строка
     service_type = db.Column(db.String(120))  # Тип консультации
