@@ -133,43 +133,53 @@ def delete_data(data_id):
 @app.route("/edit/<int:data_id>", methods=["GET", "POST"])
 def edit_data(data_id):
     try:
-        # Загружаем запись из базы данных
         data_item = Data.query.get_or_404(data_id)
 
         if request.method == "POST":
-            # Получаем данные из формы
-            data_item.data = request.form['data']
-            data_item.salary = request.form['salary']
-            data_item.service_type = request.form['service_type']
-            data_item.service_duration = request.form['service_duration']
-            data_item.service_price = request.form['service_price']
+            data_item.data = request.form.get("data")
+            data_item.salary = int(request.form.get("salary"))
+            
+            # Чекбоксы
+            options = request.form.getlist("options")
+            data_item.options = json.dumps(options)  # Преобразуем в строку JSON
+            
+            # Услуги
+            service_type = request.form.get("service_type")
+            service_duration = request.form.get("service_duration")
+            service_price = request.form.get("service_price")
 
-            # Проверка на положительные числа для зарплаты и стоимости
             try:
-                salary_value = float(data_item.salary)
-                price_value = float(data_item.service_price)
-
-                if salary_value <= 0 or price_value <= 0:
-                    return "Ошибка: Зарплата и стоимость должны быть положительными числами", 400
+                duration_value = int(service_duration)
+                price_value = int(service_price)
             except ValueError:
-                return "Ошибка: Зарплата и стоимость должны быть числами", 400
+                return "Ошибка: Длительность и цена должны быть числами", 400
 
-            # Обработка специализаций (чекбоксы)
-            selected_options = request.form.getlist('options')  # Получаем список выбранных чекбоксов
-            data_item.options = json.dumps(selected_options)  # Преобразуем в JSON
+            # Обновляем список услуг
+            existing_services = []
+            if data_item.services:
+                existing_services = json.loads(data_item.services)
 
-            # Сохраняем изменения в базе данных
+            new_service = {
+                "type": service_type,
+                "duration": duration_value,
+                "price": price_value
+            }
+            existing_services.append(new_service)
+            data_item.services = json.dumps(existing_services)  # Преобразуем в строку JSON
+
             db.session.commit()
+            return redirect(url_for("index"))
 
-            return redirect(url_for('index'))  # Перенаправляем на главную страницу
-
-        # Если метод GET, то просто передаем данные для редактирования
+        # Преобразуем JSON обратно в список для отображения
         data_item.options = json.loads(data_item.options) if data_item.options else []
-        return render_template('edit.html', data_item=data_item)
+        data_item.services = json.loads(data_item.services) if data_item.services else []
+
+        return render_template("edit.html", data_item=data_item)
 
     except Exception as e:
-        logging.exception("Ошибка при редактировании данных")
+        logging.exception("Ошибка при редактировании")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 if __name__ == '__main__':
