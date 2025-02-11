@@ -49,6 +49,18 @@ def index():
             service_price = request.form.get("service_price")
             options_input = request.form.getlist("options")
 
+            salary_input = request.form.get("salary")
+
+            # Если поле пустое или чекбокс не активен, присваиваем None или 0
+            if not salary_input:
+                salary_value = None  # Можно также использовать 0, если оклад обязателен
+            else:
+                try:
+                    salary_value = int(salary_input)
+                except ValueError:
+                    return "Ошибка: Оклад должен быть числом", 400
+
+
             salary_value = int(salary_input)
             duration_value = int(service_duration)
             price_value = int(service_price)

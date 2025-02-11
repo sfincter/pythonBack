@@ -17,7 +17,7 @@
         <input class="form-control" type="text" id="data" name="data" required><br><br>
 
         <label>
-            <input type="checkbox" id="salary_checkbox"> Получает оклад
+            <input type="checkbox" id="salary_checkbox" name="has_salary"> Получает оклад
         </label>
 
         <div id="salary_field" style="display: none;">
@@ -57,7 +57,7 @@
             {% for data_item in data %}
                 <li>
                     <strong>{{ data_item.data }}<br>
-                    </strong> Зарплата - {{ data_item.salary }} ₽
+                    </strong> Оклад - {{ data_item.salary }} ₽
                     <br>
                     Тип консультации: {{ data_item.service_type }}<br>
                     Длительность: {{ data_item.service_duration }} мин<br>
