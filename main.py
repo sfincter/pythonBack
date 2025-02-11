@@ -36,61 +36,90 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-# Главная страница с формой
+# Главная страница с формой и сортировкой
 @app.route("/", methods=["GET", "POST"])
 def index():
     try:
         if request.method == "POST":
-            # Получаем данные из формы и добавляем их в базу
             data_input = request.form.get("data")
             salary_input = request.form.get("salary")
+            has_salary = request.form.get("has_salary")  # Чекбокс "Получает оклад"
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
-            options_input = request.form.getlist("options")
+            options = request.form.getlist("options")  # Список значений чекбоксов
 
-            # Проверяем, пустое ли поле зарплаты (если чекбокс не нажат, поле не передается)
-            if not salary_input or salary_input.strip() == "":
-                salary_value = None  # Или 0, если оклад не обязателен
-            else:
+            # Проверка на заполненные обязательные поля
+            if not data_input or not service_duration or not service_price:
+                return "Ошибка: Заполните все поля", 400
+
+            try:
+                duration_value = int(service_duration)
+                price_value = int(service_price)
+            except ValueError:
+                return "Ошибка: Длительность и цена должны быть числами", 400
+
+            # Обработка поля зарплаты
+            if has_salary:  # Если чекбокс нажат
                 try:
-                    salary_value = int(salary_input)
+                    salary_value = int(salary_input) if salary_input else 0
                 except ValueError:
                     return "Ошибка: Оклад должен быть числом", 400
+            else:  # Если чекбокс НЕ нажат
+                salary_value = 0  # Или None, если нужно игнорировать поле
 
+            # Загружаем существующие услуги (если есть)
+            existing_services = []
+            if request.form.get("existing_services"):
+                existing_services = json.loads(request.form.get("existing_services"))
 
+            # Добавляем новую услугу
+            new_service = {
+                "type": service_type,
+                "duration": duration_value,
+                "price": price_value
+            }
+            existing_services.append(new_service)
 
-            salary_value = int(salary_input)
-            duration_value = int(service_duration)
-            price_value = int(service_price)
+            # Преобразуем список в JSON
+            services_json = json.dumps(existing_services)
+            options_json = json.dumps(options)
 
+            # Создание новой записи
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
-                service_type=service_type,
-                service_duration=duration_value,
-                service_price=price_value,
-                options=json.dumps(options_input)
+                services=services_json,
+                options=options_json
             )
 
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for("index"))
 
-        # Получаем все данные из БД
-        all_data = Data.query.all()
+        # Получаем параметры сортировки
+        order = request.args.get("order", "asc")  
 
-        # Преобразуем JSON-строки обратно в списки для отображения
+        # Выборка данных с сортировкой
+        if order == "asc":
+            all_data = Data.query.order_by(Data.salary.asc()).all()
+        elif order == "desc":
+            all_data = Data.query.order_by(Data.salary.desc()).all()
+        else:
+            all_data = Data.query.all()
+
+        # Преобразуем JSON-строки обратно в списки словарей
         for item in all_data:
-            item.options = json.loads(item.options)
+            item.services = json.loads(item.services) if item.services else []
+            item.options = json.loads(item.options) if item.options else []
 
-        return render_template("index.html", data=all_data)
+        total_entries = Data.query.count()  # Подсчет общего количества записей
+
+        return render_template("index.html", data=all_data, order=order, total_entries=total_entries)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
-
-
 
 
     
