@@ -20,11 +20,30 @@ class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
-    options = db.Column(JSON)
-    services = db.Column(db.Text, nullable=True, default="")  # JSON-строка
+
+    options = db.Column(db.Text, nullable=True)  # Храним как строку JSON
+    services = db.Column(db.Text, nullable=True, default="[]")  # Храним как строку JSON
+
     service_type = db.Column(db.String(120))  # Тип консультации
     service_duration = db.Column(db.Integer)  # Длительность консультации
     service_price = db.Column(db.Integer)  # Стоимость консультации
+
+    # Декораторы для работы с JSON
+    @property
+    def options_list(self):
+        return json.loads(self.options) if self.options else []
+
+    @options_list.setter
+    def options_list(self, value):
+        self.options = json.dumps(value)
+
+    @property
+    def services_list(self):
+        return json.loads(self.services) if self.services else []
+
+    @services_list.setter
+    def services_list(self, value):
+        self.services = json.dumps(value)
 
 
 # Создаем таблицы (если их нет)
