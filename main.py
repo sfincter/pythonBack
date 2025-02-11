@@ -142,7 +142,7 @@ def edit_data(data_id):
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
-            options_input = request.form.getlist("options")  # Список выбранных чекбоксов
+            options_input = request.form.getlist("options")  # Получаем список выбранных чекбоксов
 
             # Обновляем запись
             data_item.data = data_input
@@ -165,6 +165,7 @@ def edit_data(data_id):
     except Exception as e:
         logging.exception("Ошибка при редактировании данных")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
