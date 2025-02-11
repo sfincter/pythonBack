@@ -131,9 +131,6 @@ def index():
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
 
-
-
-
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
 def delete_data(data_id):
@@ -151,47 +148,57 @@ def delete_data(data_id):
 
 @app.route("/edit/<int:data_id>", methods=["GET", "POST"])
 def edit_data(data_id):
-    try:
-        data_item = Data.query.get_or_404(data_id)
+    data_item = Data.query.get(data_id)
+    if not data_item:
+        return "Ошибка: Данные не найдены", 404
 
-        if request.method == "POST":
-            data_item.data = request.form.get("data")
-            data_item.salary = request.form.get("salary")
-
-            # Обработка чекбоксов (специализации)
-            options = request.form.getlist("options")
-            data_item.options = json.dumps(options)  # Сохранение как JSON-строка
-
-            # Обработка услуг
+    if request.method == "POST":
+        try:
+            data_input = request.form.get("data")
+            salary_input = request.form.get("salary")
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
+            options = request.form.getlist("options")  # Чекбоксы специализаций
+            services = request.form.getlist("services")  # Услуги
+
+            # Проверяем, что поля не пустые
+            if not data_input or not salary_input or not service_duration or not service_price:
+                return "Ошибка: Заполните все поля", 400
 
             try:
-                duration_value = int(service_duration) if service_duration else None
-                price_value = int(service_price) if service_price else None
+                salary_value = int(salary_input)
+                duration_value = int(service_duration)
+                price_value = int(service_price)
             except ValueError:
-                return "Ошибка: Длительность и цена должны быть числами", 400
+                return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
 
-            # Создание или обновление услуг
-            services = [{"type": service_type, "duration": duration_value, "price": price_value}]
-            data_item.services = json.dumps(services)  # Сохранение как JSON-строка
+            # Преобразуем списки в JSON-строки для хранения в БД
+            options_json = json.dumps(options) if options else "[]"
+            services_json = json.dumps(services) if services else "[]"
 
-            # Отключаем автофлеш перед коммитом
-            with db.session.no_autoflush:
-                db.session.commit()
+            # Обновляем данные
+            data_item.data = data_input
+            data_item.salary = salary_value
+            data_item.service_type = service_type
+            data_item.service_duration = duration_value
+            data_item.service_price = price_value
+            data_item.options = options_json
+            data_item.services = services_json
 
+            db.session.commit()
             return redirect(url_for("index"))
 
-        # Преобразуем JSON обратно в список для отображения в шаблоне
-        data_item.options = json.loads(data_item.options) if data_item.options else []
-        data_item.services = json.loads(data_item.services) if data_item.services else []
+        except Exception as e:
+            logging.exception("Ошибка при редактировании данных")
+            return f"Ошибка сервера: {str(e)}", 500
 
-        return render_template("edit.html", data_item=data_item)
+    # Загружаем JSON-данные в списки перед отправкой в шаблон
+    data_item.options = json.loads(data_item.options) if data_item.options else []
+    data_item.services = json.loads(data_item.services) if data_item.services else []
 
-    except Exception as e:
-        logging.exception("Ошибка при редактировании")
-        return f"Ошибка сервера: {str(e)}", 500
+    return render_template("edit.html", data_item=data_item)
+
 
 
 
