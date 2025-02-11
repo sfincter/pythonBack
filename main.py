@@ -100,31 +100,44 @@ def delete_data(data_id):
 @app.route("/edit/<int:data_id>", methods=["GET", "POST"])
 def edit_data(data_id):
     try:
+        # Загружаем запись из базы данных
         data_item = Data.query.get_or_404(data_id)
 
         if request.method == "POST":
+            # Получаем данные из формы
             data_item.data = request.form['data']
             data_item.salary = request.form['salary']
             data_item.service_type = request.form['service_type']
             data_item.service_duration = request.form['service_duration']
             data_item.service_price = request.form['service_price']
 
+            # Проверка на положительные числа для зарплаты и стоимости
+            try:
+                salary_value = float(data_item.salary)
+                price_value = float(data_item.service_price)
+
+                if salary_value <= 0 or price_value <= 0:
+                    return "Ошибка: Зарплата и стоимость должны быть положительными числами", 400
+            except ValueError:
+                return "Ошибка: Зарплата и стоимость должны быть числами", 400
+
             # Обработка специализаций (чекбоксы)
             selected_options = request.form.getlist('options')  # Получаем список выбранных чекбоксов
             data_item.options = json.dumps(selected_options)  # Преобразуем в JSON
 
+            # Сохраняем изменения в базе данных
             db.session.commit()
 
-            return redirect(url_for('index'))
+            return redirect(url_for('index'))  # Перенаправляем на главную страницу
 
-        # Преобразуем строку JSON обратно в список
+        # Если метод GET, то просто передаем данные для редактирования
         data_item.options = json.loads(data_item.options) if data_item.options else []
-
         return render_template('edit.html', data_item=data_item)
 
     except Exception as e:
         logging.exception("Ошибка при редактировании данных")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
