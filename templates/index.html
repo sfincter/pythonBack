@@ -17,10 +17,10 @@
         <input type="text" id="salary" name="salary" required><br><br>
 
         <label for="service_type">Тип консультации:</label>
-          <select name="options">
+        <select name="options">
             <option value="Индивидуальная">Индивидуальная</option>
             <option value="Групповая">Групповая</option>
-          </select>
+        </select>
 
         <label for="service_duration">Длительность консультации (мин):</label>
         <input type="text" id="service_duration" name="service_duration"><br><br>
@@ -57,9 +57,9 @@
                 {% for option in data_item.options %}
                     {{ option }}<br>
                 {% endfor %}
-                <a href="{{ url_for('edit_data', data_id=item.id) }}">Редактировать</a>
+                <a href="{{ url_for('edit_data', data_id=data_item.id) }}">Редактировать</a>
             </li>
-            <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post" style="display:inline;">
+            <form action="{{ url_for('delete_data', data_id=data_item.id) }}" method="post" style="display:inline;">
                 <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
             </form>
         {% endfor %}

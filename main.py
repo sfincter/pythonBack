@@ -125,6 +125,8 @@ def delete_data(data_id):
     
     return redirect(url_for("index"))
 
+
+
 @app.route("/edit/<int:data_id>", methods=["GET", "POST"])
 def edit_data(data_id):
     # Получаем данные записи по ID или возвращаем 404, если запись не найдена
