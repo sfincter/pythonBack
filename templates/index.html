@@ -22,8 +22,10 @@
 
         <div id="salary_field" style="display: none;">
             <label for="salary">Оклад:</label>
-            <input type="number" name="salary" id="salary" value="0">
+            <input class="form-control" type="number" name="salary" id="salary" value="0" min="0" max="1000000">
         </div>
+
+        <br>
 
         <label for="service_type">Тип консультации:</label>
         <select class="form-select" name="service_type" required>
