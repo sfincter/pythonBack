@@ -14,7 +14,7 @@
                 <input type="text" name="data" value="{{ data_item.data }}" required><br><br>
 
                 <label for="salary">Зарплата:</label>
-                <input type="number" name="salary" value="{{ data_item.salary }}" required><br><br>
+                <input type="number" name="salary" value="{{ data_item.salary }}" required min="1" step="0.01" required><br><br>
 
                 <label for="service_type">Тип консультации:</label>
                 <select name="service_type" required>
@@ -26,7 +26,7 @@
                 <input type="number" name="service_duration" value="{{ data_item.service_duration }}" required><br><br>
 
                 <label for="service_price">Стоимость консультации:</label>
-                <input type="number" name="service_price" value="{{ data_item.service_price }}" required><br><br>
+                <input type="number" name="service_price" value="{{ data_item.service_price }}" required min="1" step="0.01" required><br><br>
 
                 <label for="options">Выберите специализацию:</label><br>
                 <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>

@@ -17,7 +17,7 @@
         <input type="text" id="data" name="data" required><br><br>
 
         <label for="salary">Введите зарплату:</label>
-        <input type="number" id="salary" name="salary" required><br><br>
+        <input type="number" id="salary" name="salary" required min="1" step="0.01" required><br><br>
 
         <label for="service_type">Тип консультации:</label>
         <select name="service_type" required>
@@ -29,7 +29,7 @@
         <input type="number" id="service_duration" name="service_duration" required><br><br>
 
         <label for="service_price">Стоимость консультации:</label>
-        <input type="number" id="service_price" name="service_price" required><br><br>
+        <input type="number" id="service_price" name="service_price" required min="1" step="0.01" required><br><br> 
 
         <label for="options">Выберите специализацию:</label><br>
         <input type="checkbox" name="options" value="Врач"> Врач<br>
