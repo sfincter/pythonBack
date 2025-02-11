@@ -3,8 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
-
 app = Flask(__name__)
 
 # Подключение к базе данных
@@ -28,63 +26,61 @@ class Data(db.Model):
 with app.app_context():
     db.create_all()
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+
 # Главная страница с формой
 @app.route("/", methods=["GET", "POST"])
 def index():
-    search_query = request.args.get("search", "").strip()
+    try:
+        if request.method == "POST":
+            data_input = request.form.get("data")
+            salary_input = request.form.get("salary")
+            service_type = request.form.get("service_type")
+            service_duration = request.form.get("service_duration")
+            service_price = request.form.get("service_price")
 
-    if request.method == "POST":
-        data_input = request.form.get("data")
-        salary_input = request.form.get("salary")
-        options_input = request.form.getlist("options")
-        service_type = request.form.get("service_type")
-        service_duration = request.form.get("service_duration")
-        service_price = request.form.get("service_price")
+            if not data_input or not salary_input:
+                return "Ошибка: Заполните все поля", 400
 
-        if data_input and salary_input:
             try:
                 salary_value = int(salary_input)
-                options_value = ", ".join(options_input) if options_input else ""
-
-                # Формируем объект услуги
-                service = {
-                    "type": service_type,
-                    "duration": service_duration,
-                    "price": service_price
-                }
-
-                # Получаем старые услуги и добавляем новую
-                existing_services = []
-                if request.form.get("existing_services"):
-                    existing_services = json.loads(request.form.get("existing_services"))
-                
-                existing_services.append(service)
-
-                new_data = Data(
-                    data=data_input,
-                    salary=salary_value,
-                    options=options_value,
-                    services=existing_services  # Сохраняем массив услуг
-                )
-
-                db.session.add(new_data)
-                db.session.commit()
-                return redirect(url_for("index"))
+                duration_value = int(service_duration)
+                price_value = int(service_price)
             except ValueError:
-                return "Ошибка: зарплата и цена должны быть числами", 400
+                return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
 
-    # Фильтрация поиска
-    if search_query:
-        all_data = Data.query.filter(
-            (Data.data.ilike(f"%{search_query}%")) | 
-            (Data.salary == search_query) | 
-            (Data.options.ilike(f"%{search_query}%")) | 
-            (Data.services.ilike(f"%{search_query}%"))
-        ).all()
-    else:
+            # Проверяем, есть ли колонка services
+            existing_services = []
+            if request.form.get("existing_services"):
+                existing_services = json.loads(request.form.get("existing_services"))
+
+            new_service = {
+                "type": service_type,
+                "duration": duration_value,
+                "price": price_value
+            }
+            existing_services.append(new_service)
+
+            # Создание новой записи
+            new_data = Data(
+                data=data_input,
+                salary=salary_value,
+                services=existing_services
+            )
+
+            db.session.add(new_data)
+            db.session.commit()
+            return redirect(url_for("index"))
+
         all_data = Data.query.all()
+        return render_template("index.html", data=all_data)
 
-    return render_template("index.html", data=all_data, search_query=search_query)
+    except Exception as e:
+        logging.exception("Ошибка на сервере")
+        return f"Ошибка сервера: {str(e)}", 500
 
 
 
