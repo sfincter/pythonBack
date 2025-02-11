@@ -129,25 +129,29 @@ def delete_data(data_id):
 
 @app.route("/edit/<int:data_id>", methods=["GET", "POST"])
 def edit_data(data_id):
-    # Получаем данные записи по ID или возвращаем 404, если запись не найдена
-    data_item = Data.query.get(data_id)
+    try:
+        data_item = Data.query.get_or_404(data_id)
+        
+        if request.method == "POST":
+            # Получаем значения из формы
+            data_input = request.form["data"]
+            salary_input = request.form["salary"]
+            options_input = request.form.getlist("options")  # Получаем все выбранные чекбоксы
 
-    if not data_item:
-        # Если запись не найдена, возвращаем ошибку 404
-        return "Запись не найдена", 404
+            # Обновляем данные
+            data_item.data = data_input
+            data_item.salary = int(salary_input)
+            data_item.options = options_input  # Сохраняем список выбранных специализаций
 
-    if request.method == "POST":
-        # Обновляем данные из формы
-        data_item.data = request.form['data']
-        data_item.salary = request.form['salary']
-        data_item.options = " , ".join(request.form.getlist('options'))  # Обновляем выбранные опции
+            db.session.commit()
+            return redirect(url_for("index"))  # Перенаправляем на главную страницу
 
-        # Сохраняем изменения в базе данных
-        db.session.commit()
-        return redirect(url_for("index"))  # Перенаправляем на главную страницу
+        return render_template("edit.html", data_item=data_item)
+    
+    except Exception as e:
+        logging.exception("Ошибка при редактировании данных")
+        return f"Ошибка сервера: {str(e)}", 500
 
-    # Если GET-запрос, то заполняем форму данными для редактирования
-    return render_template("edit.html", data_item=data_item)
 
 
 
