@@ -44,6 +44,10 @@ def index():
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
 
+            # Получаем все выбранные чекбоксы
+            selected_options = request.form.getlist("options")  # список значений чекбоксов
+            options_json = json.dumps(selected_options)  # Преобразуем в JSON-строку
+
             # Проверка на заполненные поля
             if not data_input or not salary_input:
                 return "Ошибка: Заполните все поля", 400
@@ -75,7 +79,8 @@ def index():
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
-                services=services_json
+                services=services_json,
+                options=options_json  # Сохраняем выбранные чекбоксы
             )
 
             db.session.add(new_data)
@@ -93,11 +98,18 @@ def index():
                 except json.JSONDecodeError:
                     item.services = []  # Если парсинг не удался, делаем пустым списком
 
+            if isinstance(item.options, str):
+                try:
+                    item.options = json.loads(item.options)  # Преобразуем JSON в список
+                except json.JSONDecodeError:
+                    item.options = []  # Если ошибка, делаем пустым списком
+
         return render_template("index.html", data=all_data)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
+
 
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
