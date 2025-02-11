@@ -20,7 +20,7 @@ class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
-    options = db.Column(db.String(255), nullable=True, default="")
+    options = db.Column(JSON)
     services = db.Column(db.Text, nullable=True, default="")  # JSON-строка
 
 
@@ -141,8 +141,11 @@ def edit_data(data_id):
             # Обновляем данные
             data_item.data = data_input
             data_item.salary = int(salary_input)
-            data_item.options = options_input  # Сохраняем список выбранных специализаций
-
+            
+            # Преобразуем список специализаций в строку JSON перед сохранением
+            data_item.options = json.dumps(options_input)
+            
+            # Сохраняем изменения в базе данных
             db.session.commit()
             return redirect(url_for("index"))  # Перенаправляем на главную страницу
 
