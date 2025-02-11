@@ -136,33 +136,36 @@ def edit_data(data_id):
         data_item = Data.query.get_or_404(data_id)
         
         if request.method == "POST":
-            # Получаем значения из формы
+            # Получаем данные из формы
             data_input = request.form["data"]
             salary_input = request.form["salary"]
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
-            options_input = request.form.getlist("options")  # Получаем все выбранные чекбоксы
+            options_input = request.form.getlist("options")  # Список выбранных чекбоксов
 
-            # Обновляем данные
+            # Обновляем запись
             data_item.data = data_input
             data_item.salary = int(salary_input)
             data_item.service_type = service_type
             data_item.service_duration = int(service_duration)
             data_item.service_price = int(service_price)
             
-            # Преобразуем список специализаций в строку JSON перед сохранением
+            # Сохраняем выбранные специализации в формате JSON
             data_item.options = json.dumps(options_input)
-            
+
             # Сохраняем изменения в базе данных
             db.session.commit()
-            return redirect(url_for("index"))  # Перенаправляем на главную страницу
 
+            return redirect(url_for("index"))  # После успешного обновления, перенаправляем на главную страницу
+        
+        # Если метод GET, то показываем текущие данные
         return render_template("edit.html", data_item=data_item)
-    
+
     except Exception as e:
         logging.exception("Ошибка при редактировании данных")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
