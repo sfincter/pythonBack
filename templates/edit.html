@@ -29,7 +29,7 @@
                 <label for="service_price">Стоимость консультации:</label>
                 <input class="form-control" type="number" name="service_price" value="{{ data_item.service_price }}" required min="1" step="0.01"><br><br>
             
-                <label for="options">Выберите специализацию:</label><br>
+                <label for="options">Выберите тип сотрудника:</label><br>
                 <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>
                 <input type="checkbox" name="options" value="Психотерапевт" {% if 'Психотерапевт' in data_item.options %}checked{% endif %}> Психотерапевт<br>
                 <input type="checkbox" name="options" value="Доктор медицинских наук" {% if 'Доктор медицинских наук' in data_item.options %}checked{% endif %}> Доктор медицинских наук<br>
