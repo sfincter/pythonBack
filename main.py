@@ -14,11 +14,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Модель для данных
+from sqlalchemy.dialects.mysql import JSON  # Для хранения массива данных в MySQL
+
 class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
-    options = db.Column(db.Text, nullable=True)
+    options = db.Column(db.String(255), nullable=True, default="")
+    services = db.Column(JSON, nullable=True, default=[])  # Храним список услуг
+
 
 # Создаем таблицы (если их нет)
 with app.app_context():
@@ -32,37 +36,56 @@ def index():
     if request.method == "POST":
         data_input = request.form.get("data")
         salary_input = request.form.get("salary")
-        options_input = request.form.getlist("options")  # Получаем список чекбоксов
+        options_input = request.form.getlist("options")
+        service_type = request.form.get("service_type")
+        service_duration = request.form.get("service_duration")
+        service_price = request.form.get("service_price")
 
         if data_input and salary_input:
             try:
                 salary_value = int(salary_input)
-                options_value = ", ".join(options_input) if options_input else ""  # Преобразуем список в строку
-                new_data = Data(data=data_input, salary=salary_value, options=options_value)
+                options_value = ", ".join(options_input) if options_input else ""
+
+                # Формируем объект услуги
+                service = {
+                    "type": service_type,
+                    "duration": service_duration,
+                    "price": service_price
+                }
+
+                # Получаем старые услуги и добавляем новую
+                existing_services = []
+                if request.form.get("existing_services"):
+                    existing_services = json.loads(request.form.get("existing_services"))
+                
+                existing_services.append(service)
+
+                new_data = Data(
+                    data=data_input,
+                    salary=salary_value,
+                    options=options_value,
+                    services=existing_services  # Сохраняем массив услуг
+                )
+
                 db.session.add(new_data)
                 db.session.commit()
                 return redirect(url_for("index"))
             except ValueError:
-                return "Ошибка: зарплата должна быть числом", 400
+                return "Ошибка: зарплата и цена должны быть числами", 400
 
     # Фильтрация поиска
     if search_query:
-        try:
-            salary_value = int(search_query)  # Проверяем, является ли запрос числом
-            all_data = Data.query.filter(
-                (Data.data.ilike(f"%{search_query}%")) | 
-                (Data.salary == salary_value) |
-                (Data.options.ilike(f"%{search_query}%"))  # Добавлен поиск по options
-            ).all()
-        except ValueError:
-            all_data = Data.query.filter(
-                (Data.data.ilike(f"%{search_query}%")) | 
-                (Data.options.ilike(f"%{search_query}%"))  # Поиск по options как тексту
-            ).all()
+        all_data = Data.query.filter(
+            (Data.data.ilike(f"%{search_query}%")) | 
+            (Data.salary == search_query) | 
+            (Data.options.ilike(f"%{search_query}%")) | 
+            (Data.services.ilike(f"%{search_query}%"))
+        ).all()
     else:
         all_data = Data.query.all()
 
     return render_template("index.html", data=all_data, search_query=search_query)
+
 
 
 

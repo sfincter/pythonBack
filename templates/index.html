@@ -17,20 +17,26 @@
             </form>
             
 
-            <form action="/" method="post">
-                <input type="text" name="data" placeholder="Введите данные" required>
-                <input type="number" name="salary" placeholder="Введите зарплату" required>
+            <form action="{{ url_for('index') }}" method="post">
+                <input type="text" name="data" placeholder="Имя пользователя" required>
+                <input type="number" name="salary" placeholder="Зарплата" required>
             
-                <label for="options">Выберите специализацию:</label><br>
-                <input type="checkbox" name="options" value="Врач"> Врач<br>
-                <input type="checkbox" name="options" value="Психотерапевт"> Психотерапевт<br>
-                <input type="checkbox" name="options" value="Доктор медицинских наук"> Доктор медицинских наук<br>
-                <input type="checkbox" name="options" value="Кандидат медицинских наук"> Кандидат медицинских наук<br>
-                <input type="checkbox" name="options" value="Врач-психотерапевт"> Врач-психотерапевт<br>
-                <input type="checkbox" name="options" value="Клинический психолог"> Клинический психолог<br>
+                <label><input type="checkbox" name="options" value="Option 1"> Option 1</label>
+                <label><input type="checkbox" name="options" value="Option 2"> Option 2</label>
             
-                <button class="btn btn-success" type="submit">Добавить</button>
+                <br><br>
+                <label>Тип консультации:</label>
+                <select name="service_type" required>
+                    <option value="Индивидуальная">Индивидуальная</option>
+                    <option value="Групповая">Групповая</option>
+                </select>
+            
+                <input type="number" name="service_duration" placeholder="Длительность (минуты)" required>
+                <input type="number" name="service_price" placeholder="Стоимость" required>
+            
+                <button type="submit">Добавить</button>
             </form>
+            
             
     
 
@@ -38,10 +44,10 @@
     <table class="table">
         <tr>
             <th>ID</th>
-            <th>Data</th>
-            <th>Salary</th>
-            <th>Options</th>
-            <th>Actions</th>
+            <th>Имя</th>
+            <th>Зарплата</th>
+            <th>Опции</th>
+            <th>Консультации</th>
         </tr>
         {% for item in data %}
         <tr>
@@ -50,14 +56,20 @@
             <td>{{ item.salary }}</td>
             <td>{{ item.options if item.options else "Нет данных" }}</td>
             <td>
-                <a href="{{ url_for('edit_data', data_id=item.id) }}">Редактировать</a>
-                <form action="{{ url_for('delete_data', data_id=item.id) }}" method="post" style="display:inline;">
-                    <button class="btn btn-danger" type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
-                </form>
+                {% if item.services %}
+                    <ul>
+                        {% for service in item.services %}
+                            <li>{{ service.type }} - {{ service.duration }} мин - {{ service.price }} ₽</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    Нет услуг
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
+    
     
     
     
