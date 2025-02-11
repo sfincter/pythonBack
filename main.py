@@ -44,19 +44,20 @@ def index():
             # Получаем данные из формы и добавляем их в базу
             data_input = request.form.get("data")
             salary_input = request.form.get("salary")
+            has_salary = request.form.get("has_salary")  # Чекбокс "Получает оклад"
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
             options_input = request.form.getlist("options")
 
-            # Проверяем, пустое ли поле зарплаты (если чекбокс не нажат, поле не передается)
-            if not salary_input or salary_input.strip() == "":
-                salary_value = None  # Или 0, если оклад не обязателен
-            else:
+            # Обработка поля зарплаты
+            if has_salary:  # Если чекбокс нажат
                 try:
-                    salary_value = int(salary_input)
+                    salary_value = int(salary_input) if salary_input else 0
                 except ValueError:
                     return "Ошибка: Оклад должен быть числом", 400
+            else:  # Если чекбокс НЕ нажат
+                salary_value = 0  # Или None, если нужно игнорировать поле
 
 
 
