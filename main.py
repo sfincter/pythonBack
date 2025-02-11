@@ -44,6 +44,7 @@ def index():
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
 
+            # Проверка на заполненные поля
             if not data_input or not salary_input:
                 return "Ошибка: Заполните все поля", 400
 
@@ -54,11 +55,12 @@ def index():
             except ValueError:
                 return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
 
-            # Загружаем старые услуги (если есть)
+            # Загружаем существующие услуги (если есть)
             existing_services = []
             if request.form.get("existing_services"):
                 existing_services = json.loads(request.form.get("existing_services"))
 
+            # Добавляем новую услугу
             new_service = {
                 "type": service_type,
                 "duration": duration_value,
@@ -66,44 +68,36 @@ def index():
             }
             existing_services.append(new_service)
 
-            # Преобразуем список в строку JSON
+            # Преобразуем список в JSON-строку
             services_json = json.dumps(existing_services)
 
+            # Создание новой записи
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
-                services=services_json  # Сохраняем как строку
+                services=services_json
             )
 
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for("index"))
 
+        # Получаем все данные из БД
         all_data = Data.query.all()
+
+        # Преобразуем JSON-строки обратно в списки словарей
+        for item in all_data:
+            if isinstance(item.services, str):
+                try:
+                    item.services = json.loads(item.services)
+                except json.JSONDecodeError:
+                    item.services = []  # Если парсинг не удался, делаем пустым списком
+
         return render_template("index.html", data=all_data)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
-
-
-@app.route("/")
-def index():
-    try:
-        all_data = Data.query.all()
-
-        # Преобразуем JSON-строку обратно в список словарей
-        for item in all_data:
-            if isinstance(item.services, str):  
-                item.services = json.loads(item.services)
-
-        return render_template("index.html", data=all_data)
-
-    except Exception as e:
-        logging.exception("Ошибка при загрузке данных")
-        return f"Ошибка сервера: {str(e)}", 500
-
-
 
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
