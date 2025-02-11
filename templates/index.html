@@ -39,34 +39,36 @@
         <input type="checkbox" name="options" value="Врач-психотерапевт"> Врач-психотерапевт<br>
         <input type="checkbox" name="options" value="Клинический психолог"> Клинический психолог<br><br>
 
-        <button type="submit">Добавить</button>
+        <button class="btn btn-info" type="submit">Добавить</button>
     </form>
 
     <hr>
 
     <h2>Существующие данные</h2>
     <!-- Вывод существующих записей -->
-    <ul>
-        {% for data_item in data %}
-            <li>
-                <strong>{{ data_item.data }}<br>
-                </strong> Зарплата - {{ data_item.salary }} ₽
-                <br>
-                Тип консультации: {{ data_item.service_type }}<br>
-                Длительность: {{ data_item.service_duration }} мин<br>
-                Стоимость: {{ data_item.service_price }} ₽
-                <br>
-                Специализации:
-                {% for option in data_item.options %}
-                    {{ option }}<br>
-                {% endfor %}
-                <a href="{{ url_for('edit_data', data_id=data_item.id) }}">Редактировать</a>
-            </li>
-            <form action="{{ url_for('delete_data', data_id=data_item.id) }}" method="post" style="display:inline;">
-                <button type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
-            </form>
-        {% endfor %}
-    </ul>
+    <div class="card">
+        <ul>
+            {% for data_item in data %}
+                <li>
+                    <strong>{{ data_item.data }}<br>
+                    </strong> Зарплата - {{ data_item.salary }} ₽
+                    <br>
+                    Тип консультации: {{ data_item.service_type }}<br>
+                    Длительность: {{ data_item.service_duration }} мин<br>
+                    Стоимость: {{ data_item.service_price }} ₽
+                    <br>
+                    Специализации:
+                    {% for option in data_item.options %}
+                        {{ option }}<br>
+                    {% endfor %}
+                    <a href="{{ url_for('edit_data', data_id=data_item.id) }}">Редактировать</a>
+                </li>
+                <form action="{{ url_for('delete_data', data_id=data_item.id) }}" method="post" style="display:inline;">
+                    <button class="btn btn-danger" type="submit" onclick="return confirm('Удалить запись?')">Удалить</button>
+                </form>
+            {% endfor %}
+        </ul>
+    </div>
         </div>
     </div>
 </body>

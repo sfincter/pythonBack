@@ -24,10 +24,10 @@
                 </select><br><br>
             
                 <label for="service_duration">Длительность консультации (мин):</label>
-                <input type="number" name="service_duration" value="{{ data_item.service_duration }}" min="1"><br><br>
+                <input class="form-control" type="number" name="service_duration" value="{{ data_item.service_duration }}" min="1"><br><br>
             
                 <label for="service_price">Стоимость консультации:</label>
-                <input type="number" name="service_price" value="{{ data_item.service_price }}" required min="1" step="0.01"><br><br>
+                <input class="form-control" type="number" name="service_price" value="{{ data_item.service_price }}" required min="1" step="0.01"><br><br>
             
                 <label for="options">Выберите специализацию:</label><br>
                 <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>
@@ -37,7 +37,7 @@
                 <input type="checkbox" name="options" value="Врач-психотерапевт" {% if 'Врач-психотерапевт' in data_item.options %}checked{% endif %}> Врач-психотерапевт<br>
                 <input type="checkbox" name="options" value="Клинический психолог" {% if 'Клинический психолог' in data_item.options %}checked{% endif %}> Клинический психолог<br><br>
             
-                <button type="submit">Сохранить изменения</button>
+                <button class="btn btn-info" type="submit">Сохранить изменения</button>
             </form>
             
         </div>
