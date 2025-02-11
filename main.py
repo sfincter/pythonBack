@@ -137,40 +137,34 @@ def edit_data(data_id):
 
         if request.method == "POST":
             data_item.data = request.form.get("data")
-            data_item.salary = int(request.form.get("salary"))
-            
-            # Чекбоксы
+            data_item.salary = request.form.get("salary")
+
+            # Обработка чекбоксов (специализации)
             options = request.form.getlist("options")
-            data_item.options = json.dumps(options)  # Преобразуем в строку JSON
-            
-            # Услуги
+            data_item.options = json.dumps(options)  # Сохранение как JSON-строка
+
+            # Обработка услуг
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
 
             try:
-                duration_value = int(service_duration)
-                price_value = int(service_price)
+                duration_value = int(service_duration) if service_duration else None
+                price_value = int(service_price) if service_price else None
             except ValueError:
                 return "Ошибка: Длительность и цена должны быть числами", 400
 
-            # Обновляем список услуг
-            existing_services = []
-            if data_item.services:
-                existing_services = json.loads(data_item.services)
+            # Создание или обновление услуг
+            services = [{"type": service_type, "duration": duration_value, "price": price_value}]
+            data_item.services = json.dumps(services)  # Сохранение как JSON-строка
 
-            new_service = {
-                "type": service_type,
-                "duration": duration_value,
-                "price": price_value
-            }
-            existing_services.append(new_service)
-            data_item.services = json.dumps(existing_services)  # Преобразуем в строку JSON
+            # Отключаем автофлеш перед коммитом
+            with db.session.no_autoflush:
+                db.session.commit()
 
-            db.session.commit()
             return redirect(url_for("index"))
 
-        # Преобразуем JSON обратно в список для отображения
+        # Преобразуем JSON обратно в список для отображения в шаблоне
         data_item.options = json.loads(data_item.options) if data_item.options else []
         data_item.services = json.loads(data_item.services) if data_item.services else []
 
