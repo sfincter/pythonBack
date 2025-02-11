@@ -87,6 +87,24 @@ def index():
         return f"Ошибка сервера: {str(e)}", 500
 
 
+@app.route("/")
+def index():
+    try:
+        all_data = Data.query.all()
+
+        # Преобразуем JSON-строку обратно в список словарей
+        for item in all_data:
+            if isinstance(item.services, str):  
+                item.services = json.loads(item.services)
+
+        return render_template("index.html", data=all_data)
+
+    except Exception as e:
+        logging.exception("Ошибка при загрузке данных")
+        return f"Ошибка сервера: {str(e)}", 500
+
+
+
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
 def delete_data(data_id):
