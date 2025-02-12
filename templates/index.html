@@ -52,6 +52,11 @@
 
     <hr>
 
+    <form method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить все записи?');">
+        <button type="submit" name="delete_all" class="btn btn-danger">Удалить все записи</button>
+    </form>
+    
+
     <h2>Существующие данные</h2>
     <!-- Вывод существующих записей -->
     <div class="card">
