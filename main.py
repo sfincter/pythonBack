@@ -41,7 +41,7 @@ logging.basicConfig(level=logging.DEBUG)
 def index():
     try:
         if request.method == "POST":
-
+            
             if "delete_all" in request.form:  # Проверяем, нажата ли кнопка "Удалить все записи"
                 Data.query.delete()  # Удаляем все записи
                 db.session.commit()
@@ -83,7 +83,6 @@ def index():
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for("index"))
-        
 
         # Получаем все данные из БД
         all_data = Data.query.all()
@@ -97,6 +96,9 @@ def index():
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
+
+
+
 
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
@@ -117,7 +119,6 @@ def delete_data(data_id):
 def edit_data(data_id):
     try:
         data_item = Data.query.get_or_404(data_id)
-        request_data = request.get_json()
 
         if request.method == "POST":
             # Получаем данные из формы
