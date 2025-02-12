@@ -30,7 +30,7 @@
                 <input class="form-control" type="number" name="service_price" value="{{ data_item.service_price }}" required min="1000" max="200000"><br><br>
             
                 <label for="options">Выберите специализацию:</label><br>
-                <input type="checkbox" name="options" value="Врач" {% if "Врач" in data_item.options %}checked{% endif %}> Врач<br>
+                <input type="checkbox" name="options" value="Врач" {% if 'Врач' in data_item.options %}checked{% endif %}> Врач<br>
                 <input type="checkbox" name="options" value="Психотерапевт" {% if "Психотерапевт" in data_item.options %}checked{% endif %}> Психотерапевт<br>
                 <input type="checkbox" name="options" value="Доктор медицинских наук" {% if "Доктор медицинских наук" in data_item.options %}checked{% endif %}> Доктор медицинских наук<br>
                 <input type="checkbox" name="options" value="Кандидат медицинских наук" {% if "Кандидат медицинских наук" in data_item.options %}checked{% endif %}> Кандидат медицинских наук<br>

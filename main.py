@@ -121,14 +121,16 @@ def edit_data(data_id):
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
-            options_input = request.form.getlist("options")  # Получаем список выбранных чекбоксов
+
+            # Если чекбоксы не выбраны, присваиваем пустой список
+            options_input = request.form.getlist("options") or []
 
             # Обновляем запись в базе данных
             data_item.data = data_input
-            data_item.salary = int(salary_input)
+            data_item.salary = int(salary_input) if salary_input else 0
             data_item.service_type = service_type
-            data_item.service_duration = int(service_duration)
-            data_item.service_price = int(service_price)
+            data_item.service_duration = int(service_duration) if service_duration else 0
+            data_item.service_price = int(service_price) if service_price else 0
 
             # Сохраняем выбранные специализации в формате JSON
             data_item.options = json.dumps(options_input)
@@ -136,14 +138,17 @@ def edit_data(data_id):
             # Сохраняем изменения в базе данных
             db.session.commit()
 
-            return redirect(url_for("index"))  # После успешного обновления, перенаправляем на главную страницу
+            return redirect(url_for("index"))  # Перенаправляем на главную страницу
 
-        # Если метод GET, то показываем текущие данные
+        # Десериализуем JSON обратно в список для корректного отображения чекбоксов
+        data_item.options = json.loads(data_item.options) if data_item.options else []
+
         return render_template("edit.html", data_item=data_item)
 
     except Exception as e:
         logging.exception("Ошибка при редактировании данных")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
