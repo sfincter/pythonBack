@@ -97,7 +97,7 @@ def index():
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
-        return f"Ошибка сервера: {str(e)}", 500
+        return f"Ошибка сервера: {str(e)}", 500 
 
     
 @app.route("/delete/<int:data_id>", methods=["POST"])
