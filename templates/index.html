@@ -83,59 +83,17 @@
                     {% for option in data_item.options %}
                         {{ option }}<br>
                     {% endfor %}
-                    <button class="edit-btn" data-id="{{ item.id }}"
-                        data-data="{{ item.data }}"
-                        data-salary="{{ item.salary }}"
-                        data-service_type="{{ item.service_type }}"
-                        data-service_duration="{{ item.service_duration }}"
-                        data-service_price="{{ item.service_price }}"
-                        data-options="{{ item.options }}">Редактировать
+                    <button class="btn btn-primary" type="button"> 
+                        <a href="{{ url_for('edit_data', data_id=data_item.id) }}">Редактировать</a>
                     </button>
                     <form action="{{ url_for('delete_data', data_id=data_item.id) }}" method="post" style="display:inline;">
                         <button class="btn btn-danger" type="submit">Удалить</button>
                     </form>
                 </li>
-                    
-
-                
             {% endfor %}
         </ul>
-        </div>
-        </div>
-        <!-- Модальное окно -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Редактирование</h2>
-        <form id="editForm">
-            <input type="hidden" id="editId">
-
-            <label>Имя:</label>
-            <input type="text" id="editData" required>
-
-            <label>Оклад:</label>
-            <input type="number" id="editSalary" min="0">
-
-            <label>Тип консультации:</label>
-            <input type="text" id="editServiceType">
-
-            <label>Длительность консультации:</label>
-            <input type="number" id="editServiceDuration" min="0">
-
-            <label>Стоимость консультации:</label>
-            <input type="number" id="editServicePrice" min="0">
-
-            <label>Специализации:</label>
-            <select id="editOptions" multiple>
-                <option value="Психотерапевт">Психотерапевт</option>
-                <option value="Клинический психолог">Клинический психолог</option>
-                <option value="Консультант">Консультант</option>
-            </select>
-
-            <button type="submit">Сохранить</button>
-        </form>
     </div>
-</div>
+        </div>
     </div>
     <style>
         .btn-primary a {
@@ -147,12 +105,6 @@
             text-decoration: none;
         }
     </style>
-    <style>
-        /* Стили модального окна */
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: white; margin: 10% auto; padding: 20px; width: 50%; border-radius: 8px; }
-        .close { float: right; font-size: 24px; cursor: pointer; }
-        </style>
     <script>
         document.getElementById("salary_checkbox").addEventListener("change", function () {
             var salaryField = document.getElementById("salary_field");
@@ -167,71 +119,6 @@
                 salaryInput.required = false;  // Убираем обязательность
             }
         });
-    </script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let modal = document.getElementById("editModal");
-        let closeModal = document.querySelector(".close");
-        let editButtons = document.querySelectorAll(".edit-btn");
-    
-        // Открытие модального окна и подстановка данных
-        editButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                document.getElementById("editId").value = this.dataset.id;
-                document.getElementById("editData").value = this.dataset.data;
-                document.getElementById("editSalary").value = this.dataset.salary || "";
-                document.getElementById("editServiceType").value = this.dataset.service_type || "";
-                document.getElementById("editServiceDuration").value = this.dataset.service_duration || "";
-                document.getElementById("editServicePrice").value = this.dataset.service_price || "";
-    
-                // Обрабатываем чекбоксы / выпадающий список
-                let options = JSON.parse(this.dataset.options || "[]");
-                let optionsSelect = document.getElementById("editOptions");
-                Array.from(optionsSelect.options).forEach(opt => {
-                    opt.selected = options.includes(opt.value);
-                });
-    
-                modal.style.display = "block";
-            });
-        });
-    
-        // Закрытие модального окна
-        closeModal.onclick = () => { modal.style.display = "none"; };
-        window.onclick = (event) => { if (event.target === modal) modal.style.display = "none"; };
-    
-        // Обработчик формы отправки
-        document.getElementById("editForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-    
-            let data = {
-                id: document.getElementById("editId").value,
-                data: document.getElementById("editData").value,
-                salary: document.getElementById("editSalary").value || 0,
-                service_type: document.getElementById("editServiceType").value,
-                service_duration: document.getElementById("editServiceDuration").value || 0,
-                service_price: document.getElementById("editServicePrice").value || 0,
-                options: Array.from(document.getElementById("editOptions").selectedOptions).map(opt => opt.value)
-            };
-    
-            fetch(`/edit/${data.id}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    alert("Данные обновлены!");
-                    modal.style.display = "none";
-                    location.reload();  // Обновляем страницу
-                } else {
-                    alert("Ошибка: " + result.error);
-                }
-            })
-            .catch(error => alert("Ошибка запроса"));
-        });
-    });
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
