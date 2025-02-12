@@ -41,64 +41,61 @@ logging.basicConfig(level=logging.DEBUG)
 def index():
     try:
         if request.method == "POST":
+            
             if "delete_all" in request.form:  # Проверяем, нажата ли кнопка "Удалить все записи"
                 Data.query.delete()  # Удаляем все записи
                 db.session.commit()
                 return redirect(url_for("index"))
-
+            
+            # Получаем данные из формы и добавляем их в базу
             data_input = request.form.get("data")
             salary_input = request.form.get("salary")
+            has_salary = request.form.get("has_salary")  # Чекбокс "Получает оклад"
             service_type = request.form.get("service_type")
             service_duration = request.form.get("service_duration")
             service_price = request.form.get("service_price")
-            options = request.form.getlist("options")  # Чек-боксы
+            options_input = request.form.getlist("options")
 
-            if not data_input or not salary_input or not service_duration or not service_price:
-                return "Ошибка: Заполните все поля", 400
+            # Обработка поля зарплаты
+            if has_salary:  # Если чекбокс нажат
+                try:
+                    salary_value = int(salary_input) if salary_input else 0
+                except ValueError:
+                    return "Ошибка: Оклад должен быть числом", 400
+            else:  # Если чекбокс НЕ нажат
+                salary_value = None  # Или None, если нужно игнорировать поле
 
-            try:
-                salary_value = int(salary_input) if salary_input else 0
-                duration_value = int(service_duration) if service_duration else 0
-                price_value = int(service_price) if service_price else 0
-            except ValueError:
-                return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
 
-            existing_services = json.loads(request.form.get("existing_services", "[]"))
-            new_service = {"type": service_type, "duration": duration_value, "price": price_value}
-            existing_services.append(new_service)
+
+            salary_value = int(salary_input)
+            duration_value = int(service_duration)
+            price_value = int(service_price)
 
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
-                services=json.dumps(existing_services),
-                options=json.dumps(options)
+                service_type=service_type,
+                service_duration=duration_value,
+                service_price=price_value,
+                options=json.dumps(options_input)
             )
 
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for("index"))
 
-        order = request.args.get("order", "asc")  
+        # Получаем все данные из БД
+        all_data = Data.query.all()
 
-        if order == "asc":
-            all_data = Data.query.order_by(Data.salary.asc()).all()
-        elif order == "desc":
-            all_data = Data.query.order_by(Data.salary.desc()).all()
-        else:
-            all_data = Data.query.all()
-
+        # Преобразуем JSON-строки обратно в списки для отображения
         for item in all_data:
-            item.services = json.loads(item.services) if item.services else []
-            item.options = json.loads(item.options) if item.options else []
+            item.options = json.loads(item.options)
 
-        total_entries = Data.query.count()  
-
-        return render_template("index.html", data=all_data, order=order, total_entries=total_entries)
+        return render_template("index.html", data=all_data)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
-
 
 
 
