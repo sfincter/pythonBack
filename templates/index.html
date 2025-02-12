@@ -55,6 +55,15 @@
     <form method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить все записи?');">
         <button type="submit" name="delete_all" class="btn btn-danger">Удалить все записи</button>
     </form>
+
+        <!-- Кнопки сортировки -->
+    <div>
+        <a href="{{ url_for('index', order='asc') }}" class="btn btn-primary">Сортировать по возрастанию оклада</a>
+        <a href="{{ url_for('index', order='desc') }}" class="btn btn-secondary">Сортировать по убыванию оклада</a>
+    </div>
+
+    <!-- Вывод общего количества записей -->
+    <p>Общее количество записей: {{ total_entries }}</p>
     
 
     <h2>Существующие данные</h2>
