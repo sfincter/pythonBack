@@ -20,11 +20,11 @@ class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(120), nullable=False)
     salary = db.Column(db.Integer, nullable=True, default=0)
-    options = db.Column(JSON)
-    services = db.Column(db.Text, nullable=True, default="")  # JSON-строка
-    service_type = db.Column(db.String(120))  # Тип консультации
-    service_duration = db.Column(db.Integer)  # Длительность консультации
-    service_price = db.Column(db.Integer)  # Стоимость консультации
+    options = db.Column(db.Text, nullable=True, default="[]")  # JSON-строка
+    services = db.Column(db.Text, nullable=True, default="[]")  # JSON-строка
+    service_type = db.Column(db.String(120))
+    service_duration = db.Column(db.Integer)
+    service_price = db.Column(db.Integer)
 
 
 # Создаем таблицы (если их нет)
