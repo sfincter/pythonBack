@@ -47,7 +47,7 @@ def index():
                 # Получаем введённый пароль из формы
                 entered_password = request.form.get("delete_password", "")
                 # Сравниваем с ожидаемым значением (этот пароль можно хранить в переменной окружения)
-                if entered_password != "getBetter007":
+                if entered_password != "Ks#je9psLyqb0274%fosydowvridnbGdnr":
                     return "Неверный пароль!", 403
                 # Если пароль верный, удаляем все записи
                 Data.query.delete()
