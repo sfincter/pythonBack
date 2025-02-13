@@ -52,9 +52,33 @@
 
     <hr>
 
-    <form method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить все записи?');">
-        <button type="submit" name="delete_all" class="btn btn-danger">Удалить все записи</button>
-    </form>
+    <!-- Кнопка "Удалить все записи" -->
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Удалить все записи
+    </button>
+
+    <!-- Модальное окно для подтверждения удаления -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Введите пароль для удаления всех записей:</p>
+                    <form id="deleteForm" method="POST">
+                        <input type="password" name="delete_password" id="deletePassword" class="form-control" required>
+                        <input type="hidden" name="delete_all" value="true">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" form="deleteForm">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <!-- Кнопки сортировки -->
     <div>
