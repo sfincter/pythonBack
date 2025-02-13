@@ -41,61 +41,69 @@ logging.basicConfig(level=logging.DEBUG)
 def index():
     try:
         if request.method == "POST":
-            
-            if "delete_all" in request.form:  # Проверяем, нажата ли кнопка "Удалить все записи"
-                Data.query.delete()  # Удаляем все записи
+            # Если нажата кнопка "Удалить все записи"
+            if "delete_all" in request.form:
+                # Получаем введённый пароль из формы
+                entered_password = request.form.get("delete_password", "")
+                # Сравниваем с ожидаемым значением (этот пароль можно хранить в переменной окружения)
+                if entered_password != "getbetter007":
+                    return "Неверный пароль!", 403
+                # Если пароль верный, удаляем все записи
+                Data.query.delete()
                 db.session.commit()
                 return redirect(url_for("index"))
-            
-            # Получаем данные из формы и добавляем их в базу
+
+            # Обработка добавления новой записи
             data_input = request.form.get("data")
-            salary_input = request.form.get("salary")
-            has_salary = request.form.get("has_salary")  # Чекбокс "Получает оклад"
+            salary_input = request.form.get("salary", "0")  # Если пустое, используем "0"
             service_type = request.form.get("service_type")
-            service_duration = request.form.get("service_duration")
-            service_price = request.form.get("service_price")
-            options_input = request.form.getlist("options")
+            service_duration = request.form.get("service_duration", "0")
+            service_price = request.form.get("service_price", "0")
+            options = request.form.getlist("options")  # Получаем чекбоксы
 
-            # Обработка поля зарплаты
-            if has_salary:  # Если чекбокс нажат
-                try:
-                    salary_value = int(salary_input) if salary_input else 0
-                except ValueError:
-                    return "Ошибка: Оклад должен быть числом", 400
-            else:  # Если чекбокс НЕ нажат
-                salary_value = None  # Или None, если нужно игнорировать поле
-
-
-
-            salary_value = int(salary_input)
-            duration_value = int(service_duration)
-            price_value = int(service_price)
+            try:
+                salary_value = int(salary_input)
+                duration_value = int(service_duration)
+                price_value = int(service_price)
+            except ValueError:
+                return "Ошибка: Длительность, зарплата и цена должны быть числами", 400
 
             new_data = Data(
                 data=data_input,
                 salary=salary_value,
+                options=json.dumps(options),
+                services=json.dumps([]),
                 service_type=service_type,
                 service_duration=duration_value,
-                service_price=price_value,
-                options=json.dumps(options_input)
+                service_price=price_value
             )
 
             db.session.add(new_data)
             db.session.commit()
             return redirect(url_for("index"))
 
-        # Получаем все данные из БД
-        all_data = Data.query.all()
+        # GET-запрос: выборка и сортировка данных
+        order = request.args.get("order", "asc")
+        if order == "asc":
+            all_data = Data.query.order_by(Data.salary.asc()).all()
+        elif order == "desc":
+            all_data = Data.query.order_by(Data.salary.desc()).all()
+        else:
+            all_data = Data.query.all()
 
-        # Преобразуем JSON-строки обратно в списки для отображения
+        # Преобразуем сохранённые JSON-строки обратно в списки
         for item in all_data:
-            item.options = json.loads(item.options)
+            item.services = json.loads(item.services) if item.services else []
+            item.options = json.loads(item.options) if item.options else []
 
-        return render_template("index.html", data=all_data)
+        total_entries = Data.query.count()
+
+        return render_template("index.html", data=all_data, order=order, total_entries=total_entries)
 
     except Exception as e:
         logging.exception("Ошибка на сервере")
         return f"Ошибка сервера: {str(e)}", 500
+
 
 
 
